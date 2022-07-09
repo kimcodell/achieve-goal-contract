@@ -1,0 +1,1052 @@
+openapi: 3.0.1
+info:
+  title: Achieve Goal Contract REST API Documentation
+  description: >-
+    IMPORTANT: If authorization required, please put JWT on http request header like 'Authorization: Bearer ${JWT}'
+
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: kimminhyuk02@naver.com
+  license:
+    name: Apache 2.0
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+  version: 1.0.0
+externalDocs:
+  description: Find out more about Swagger
+  url: "http://swagger.io"
+servers:
+  - url: "http://localhost:8000/v1"
+
+paths:
+  /auth/signup:
+    post:
+      tags:
+        - Auth
+      description: Sign up
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+                - registerType
+                - name
+                - nickname
+              properties:
+                email:
+                  type: string
+                  format: email
+                  nullable: true
+                  example: "namin@indinity.co"
+                  description: only nullable when you sign up for SNS.
+                password:
+                  type: string
+                  nullable: true
+                  example: "test1234"
+                  description: only nullable when you sign up for SNS.
+                userType:
+                  type: number
+                  description: |
+                    NORMAL = 1,
+                    BUSINESS = 2,
+                phone:
+                  type: string
+                registerType:
+                  type: number
+                  nullable: false
+                  example: |
+                    EMAIL_PWD = 1,
+                    KAKAO = 2,
+                    APPLE = 3,
+                    NAVER = 4,
+                    GOOGLE = 5,
+                name:
+                  type: string
+                  example: "Namin Kim"
+                nickname:
+                  type: string
+                  example: "drrr123"
+                ci:
+                  type: string
+                  nullable: true
+                  description: |
+                    본인인증으로 회원가입시 필요한 정보
+                interests:
+                  type: string
+                  example: "공공기관,학원,병원"
+                businessNo:
+                  type: string
+                  example: "6258102112"
+                notificationPreference:
+                  type: number
+                  example: 32
+                  description: |
+                    checked: 32, deafult: 0
+
+      responses:
+        "200":
+          description: ok
+          content: {}
+  /auth/email:
+    post:
+      tags:
+        - Auth
+      description: Sign in via Email
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        200:
+          description: Signed in
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - jwt
+                properties:
+                  jwt:
+                    type: string
+  /auth/naver:
+    post:
+      tags:
+        - Auth
+      description: Sign in via Naver
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - accessToken
+              properties:
+                accessToken:
+                  type: string
+                fcmToken:
+                  type: string
+      responses:
+        200:
+          description: Signed in
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - jwt
+                properties:
+                  jwt:
+                    type: string
+                  isNew:
+                    type: integer
+                  email:
+                    type: string
+
+  /user/me:
+    get:
+      security:
+        - bearerAuth: []
+      description: >-
+        IMPORTANT: Authorization required. Please put JWT on http request header like 'Authorization: Bearer ${JWT}'
+      tags:
+        - User
+      summary: Get login user's full information
+      responses:
+        200:
+          description: User info
+          content:
+            application/json:
+              schema:
+                type: object
+                required:
+                  - id
+                  - name
+                  - nickname
+                  - profileImgUrl
+                  - userType
+                  - registerType
+                  - phone
+                  - email
+                  - notification_preference
+                  - businessNo
+                  - point
+                  - isBusinessMember
+                properties:
+                  id:
+                    type: number
+                  name:
+                    type: string
+                  nickname:
+                    type: string
+                  profileImgUrl:
+                    type: string
+                  registerType:
+                    type: number
+                  userType:
+                    type: number
+                  phone:
+                    type: string
+                  email:
+                    type: string
+                  businessNo:
+                    type: string
+                  point:
+                    type: number
+                  notificationPreference:
+                    type: number
+                    description: |
+                      flag data
+                      1: servie push , 2: service SMS 4: setvie email 8: marketing push 16: marketing SMS 32: marketing email
+                  isBusinessMember:
+                    type: number
+
+  /user:
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      description: Modify user info
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - nickname
+                - password
+                - newPassword
+                - notificationPreference
+              properties:
+                nickname:
+                  type: string
+                  example: "drrr123"
+                  nullable: true
+
+                  description: only nullable When changing password
+                password:
+                  type: string
+                  example: "test1234"
+                  nullable: true
+
+                  description: only nullable When changing nickname
+                newPassword:
+                  type: string
+                  example: "test5678"
+                  nullable: true
+
+                  description: only nullable When changing nickname
+                notification_preference:
+                  type: number
+                  nullable: true
+                deleteProfile:
+                  type: number
+                  nullable: true
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+
+      responses:
+        200:
+          description: OK
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - User
+      description: Delete a user
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                widthDrawalReason:
+                  type: string
+      responses:
+        200:
+          description: Deleted
+
+  /post:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Post
+      description: Get posts
+      parameters:
+        - in: query
+          name: searchWord
+          schema:
+            type: string
+          required: false
+          description: |
+            route_no, line_no, station_name, place_name...
+        - in: query
+          name: locationId
+          schema:
+            type: number
+          required: false
+        - in: query
+          name: productType
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: placeType
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: placeCategory
+          schema:
+            type: string
+          required: false
+        - in: query
+          name: monthlyPriceRange
+          schema:
+            type: array
+            items:
+              type: number
+          required: false
+          example: [100000, 500000]
+        - in: query
+          name: order
+          schema:
+            type: array
+            items:
+              type: string
+          required: false
+          example: ["monthlyPrice", "ASC"]
+        - in: query
+          name: queryUserId
+          schema:
+            type: number
+          required: false
+        - in: query
+          name: forMine
+          schema:
+            type: number
+          required: false
+          description: |
+            내 공간 가져오기 
+            true = 1
+        - in: query
+          name: bounds
+          required: true
+          description: |
+            [south, west, north, east]
+          example: [37, 127, 36, 126]
+          schema:
+            type: array
+            items:
+              type: number
+
+      responses:
+        200:
+          description: ok
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SimplePlaceDto"
+    post:
+      tags:
+        - Post
+      description: |
+        add post 
+        이 중 하나의 위치 데이터를 보낼 것 
+        (busRouteId, busStationNodeId, subwayStationId, subwayLineId, (address, addressDetail:, zipCode))
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                placeCategory:
+                  type: string
+                placeType:
+                  type: string
+                salesMonth:
+                  type: number
+                coverImgUrl:
+                  type: string
+                description:
+                  type: string
+                refundPolicy:
+                  type: string
+                busRouteId:
+                  type: number
+                  nullable: true
+                busStationNodeId:
+                  type: number
+                  nullable: true
+                subwayStationId:
+                  type: number
+                  nullable: true
+                subwayLineId:
+                  type: number
+                  nullable: true
+                addressInfo:
+                  type: object
+                  properties:
+                    address:
+                      type: string
+                    addressDetail:
+                      type: string
+                      nullable: true
+                    zipCode:
+                      type: string
+                      nullable: true
+                    gpsLong:
+                      type: number
+                      nullable: true
+                    gpsLati:
+                      type: number
+                      nullable: true
+                placeProducts:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      productType:
+                        type: string
+                      productShape:
+                        type: string
+                      productName:
+                        type: string
+                      productSizes:
+                        type: array
+                        items:
+                          type: string
+                      maxPurchaseAmount:
+                        type: number
+                      description:
+                        type: string
+                      monthlyPrice:
+                        type: number
+                      discountedMonthlyPrice:
+                        type: number
+                      makingFee:
+                        type: number
+                        description: default 0
+                      makingFeeOption:
+                        type: number
+                      imgUrls:
+                        type: array
+                        items:
+                          type: string
+      responses:
+        200:
+          description: OK
+    put:
+      security:
+        - bearerAuth: []
+      tags:
+        - Post
+      description: Update post
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                id:
+                  type: number
+                name:
+                  type: string
+                placeCategory:
+                  type: string
+                placeType:
+                  type: string
+                salesMonth:
+                  type: number
+                description:
+                  type: string
+                refundPolicy:
+                  type: string
+                coverImgUrl:
+                  type: string
+                placeProducts:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      id:
+                        type: number
+                        nullable: true
+                      plaecName:
+                        type: string
+                        nullable: true
+                      placeId:
+                        type: number
+                        nullable: true
+                      productType:
+                        type: string
+                      productShape:
+                        type: string
+                      productName:
+                        type: string
+                      productSizes:
+                        type: array
+                        items:
+                          type: string
+                      maxPurchaseAmount:
+                        type: number
+                      description:
+                        type: string
+                      monthlyPrice:
+                        type: number
+                      discountedMonthlyPrice:
+                        type: number
+                      makingFee:
+                        type: number
+                        description: default 0
+                      makingFeeOption:
+                        type: number
+                      imgUrls:
+                        type: array
+                        items:
+                          type: string
+      responses:
+        200:
+          description: Read notification
+        400:
+          description: Notification id not exists
+    delete:
+      tags:
+        - Post
+      description: Delete post
+      responses:
+        200:
+          description: ok
+
+  /post/{postId}:
+    get:
+      security:
+        - bearerAuth: []
+      tags:
+        - Post
+      description: Get post
+      parameters:
+        - name: id
+          in: path
+          description: Id of post
+          required: true
+          schema:
+            type: number
+      responses:
+        200:
+          description: post info.
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PlaceFullDto"
+
+    delete:
+      security:
+        - bearerAuth: []
+      tags:
+        - Post
+      description: Delete post
+      parameters:
+        - name: id
+          in: path
+          description: Id of Post
+          required: true
+          schema:
+            type: integer
+      responses:
+        200:
+          description: Deleted
+
+  /upload/temp-image:
+    post:
+      security:
+        - bearerAuth: []
+      tags:
+        - Upload
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+      responses:
+        200:
+          description: ok
+
+components:
+  securitySchemes:
+    bearerAuth: # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    SimplePlaceDto:
+      type: object
+      required:
+        - id
+        - placeCategory
+        - placeType
+        - name
+        - placeProductCount
+        - ratings
+        - placeTags
+        - reviewCount
+        - minDiscountedMonthlyPrice
+        - minMonthlyPrice
+        - coverImgUrl
+        - isLike
+        - progressStatus
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: number
+        placeCategory:
+          type: string
+        placeType:
+          type: string
+        name:
+          type: string
+        addressInfo:
+          type: object
+          properties:
+            zipCode:
+              type: number
+            address:
+              type: string
+            addressDetail:
+              type: string
+            gpsLati:
+              type: number
+            gpsLong:
+              type: number
+        placeProductCount:
+          type: number
+        ratings:
+          type: number
+        placeTags:
+          type: array
+          items:
+            type: string
+        reviewCount:
+          type: string
+        minDiscountedMonthlyPrice:
+          type: number
+        minMonthlyPrice:
+          type: number
+        coverImgUrl:
+          type: string
+        isLike:
+          type: number
+        progressStatus:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PlaceFullDto:
+      type: object
+      properties:
+        id:
+          type: number
+        placeCategory:
+          type: string
+        placeType:
+          type: string
+        name:
+          type: string
+        ownerUserId:
+          type: number
+        status:
+          type: number
+        salesMonth:
+          type: number
+        description:
+          type: string
+        refundPolicy:
+          type: string
+        isLike:
+          type: number
+        ratings:
+          type: number
+        reviewCount:
+          type: number
+        busRouteId:
+          type: number
+          nullable: true
+        busStationNodeId:
+          type: number
+          nullable: true
+        subwayLineId:
+          type: number
+          nullable: true
+        subwayStationId:
+          type: number
+          nullable: true
+        addressInfo:
+          type: object
+          properties:
+            zipCode:
+              type: number
+            address:
+              type: string
+            addressDetail:
+              type: string
+            gpsLati:
+              type: number
+            gpsLong:
+              type: number
+        placeReviews:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlaceReviewDto"
+        placeProducts:
+          type: array
+          items:
+            $ref: "#/components/schemas/PlaceProductFullDto"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PlaceProductFullDto:
+      type: object
+      required:
+        - id
+        - placeId
+        - placeName
+        - productType
+        - productName
+        - productShape
+        - productSizes
+        - maxPurchaseAmount
+        - description
+        - monthlyPrice
+        - discountedMonthlyPrice
+        - makingFee
+        - makingFeeOption
+        - imgUrls
+      properties:
+        id:
+          type: number
+        placeId:
+          type: number
+        placeName:
+          type: string
+        productType:
+          type: string
+        productName:
+          type: string
+        productShape:
+          type: string
+        productSizes:
+          type: array
+          items:
+            type: string
+        maxPurchaseAmount:
+          type: number
+        description:
+          type: string
+        monthlyPrice:
+          type: number
+        discountedMonthlyPrice:
+          type: number
+        makingFee:
+          type: number
+        makingFeeOption:
+          type: number
+        imgUrls:
+          type: array
+          items:
+            type: string
+    PlaceReviewDto:
+      type: object
+      required:
+        - id
+        - placeId
+        - userId
+        - imageUrl
+        - nickname
+        - ratings
+        - comment
+        - createdAt
+        - updatedAt
+      properties:
+        id:
+          type: number
+        placeId:
+          type: number
+        userId:
+          type: number
+        imageUrl:
+          type: string
+        nickname:
+          type: string
+        ratings:
+          type: number
+        comment:
+          type: string
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    PlaceProductSimpleDto:
+      type: object
+      required:
+        - id
+        - placeId
+        - productType
+        - productName
+        - imageUrl
+        - productTags
+        - productSizes
+        - monthlyPrice
+        - discountedMonthlyPrice
+        - makingFee
+      properties:
+        id:
+          type: number
+        placeId:
+          type: number
+        productType:
+          type: string
+        productName:
+          type: string
+        imageUrl:
+          type: string
+        productTags:
+          type: array
+          items:
+            type: string
+        productSizes:
+          type: array
+          items:
+            type: string
+        monthlyPrice:
+          type: number
+        discountedMonthlyPrice:
+          type: number
+        makingFee:
+          type: number
+    SimpleOrderDto:
+      type: object
+      required:
+        - orderId
+        - orderCode
+        - placeId
+        - placeName
+        - placeProductInfo
+        - status
+        - coverImgUrl
+        - startAt
+        - expireAt
+        - price
+        - createdAt
+        - updatedAt
+        - rejectedAt
+        - paidAt
+      properties:
+        orderId:
+          type: number
+        orderCode:
+          type: string
+        placeId:
+          type: number
+        placeName:
+          type: string
+        placeProductInfo:
+          type: string
+        status:
+          type: number
+        coverImgUrl:
+          type: string
+        price:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+        rejectedAt:
+          type: string
+          format: date-time
+          nullable: true
+        paidAt:
+          type: string
+          format: date-time
+          nullable: true
+        startAt:
+          type: string
+          format: date-time
+          nullable: true
+        expireAt:
+          type: string
+          format: date-time
+          nullable: true
+    OrderFullDto:
+      type: object
+      properties:
+        orderId:
+          type: number
+        orderCode:
+          type: string
+        buyer:
+          type: object
+          properties:
+            id:
+              type: number
+            nickname:
+              type: string
+            profileImgUrl:
+              type: string
+        seller:
+          type: object
+          properties:
+            id:
+              type: number
+            nickname:
+              type: string
+            profileImgUrl:
+              type: string
+        placeId:
+          type: number
+        placeName:
+          type: string
+        status:
+          type: number
+        coverImgUrl:
+          type: string
+        orderProducts:
+          type: array
+          items:
+            $ref: "#/components/schemas/OrderProductDto"
+        designRequest:
+          type: number
+        startAt:
+          type: string
+          format: date-time
+        expireAt:
+          type: string
+          format: date-time
+        month:
+          type: number
+        history:
+          type: object
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    OrderProductDto:
+      type: object
+      required:
+        - id
+        - placeId
+        - placeName
+        - productId
+        - productType
+        - quantity
+        - monthlyPrice
+        - discountedMonthlyPrice
+        - makingFee
+        - makingFeeOption
+        - imageUrl
+      properties:
+        id:
+          type: number
+        placeId:
+          type: number
+        placeName:
+          type: string
+        productId:
+          type: number
+        productType:
+          type: string
+        quantity:
+          type: number
+        monthlyPrice:
+          type: number
+        discountedMonthlyPrice:
+          type: number
+        makingFee:
+          type: number
+        makingFeeOption:
+          type: number
+        imageUrls:
+          type: string
+    CartProductDto:
+      type: object
+      required:
+        - placeId
+        - placeName
+        - productId
+        - maxPurchaseAmount
+        - salesMonth
+        - productName
+        - productType
+        - quantity
+        - monthlyPrice
+        - discountedMonthlyPrice
+        - makingFee
+        - makingFeeOption
+        - imageUrl
+      properties:
+        placeId:
+          type: number
+        placeName:
+          type: string
+        productId:
+          type: number
+        productName:
+          type: string
+        productType:
+          type: string
+        maxPurchaseAmount:
+          type: number
+        salesMonth:
+          type: number
+        quantity:
+          type: number
+        monthlyPrice:
+          type: number
+        discountedMonthlyPrice:
+          type: number
+        makingFee:
+          type: number
+        makingFeeOption:
+          type: number
+        imageUrl:
+          type: string
