@@ -54,7 +54,7 @@ class Comment extends Model<CommentAttributes> {
         deletedAt: {
           type: DataTypes.DATE,
           allowNull: true,
-          defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+          defaultValue: null,
         },
       },
       {

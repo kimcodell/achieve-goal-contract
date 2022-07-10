@@ -16,7 +16,7 @@ export default class App {
   public async setUp(): Promise<Express> {
     const app = express();
 
-    db.sequelize.sync({ force: true }).then(() => console.log("success")); //TODO 추후 수정
+    db.sequelize.sync({ force: false }).then(() => console.log("success")); //TODO 추후 수정
 
     app.use(express.urlencoded({ extended: false }));
     app.use(express.json());
@@ -36,8 +36,8 @@ export default class App {
     const router = createRootRouter();
     app.use("/", router);
 
-    app.use(NotFoundErrorHandler);
     app.use(errorHandler);
+    app.use(NotFoundErrorHandler);
 
     return app;
   }

@@ -28,6 +28,7 @@ const sequelize = new Sequelize(database, username, password, {
   define: {
     timestamps: true,
   },
+  timezone: "Asia/seoul",
   pool: {
     max: 50,
     min: 10,

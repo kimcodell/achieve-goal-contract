@@ -1,5 +1,6 @@
 import { DataTypes, Sequelize, Model } from "sequelize";
 import { Database } from ".";
+import { PostStatus } from "../types";
 
 export interface PostAttributes {
   id: number;
@@ -11,6 +12,7 @@ export interface PostAttributes {
   certificationEndDate: string;
   certificationCycle: number; // 1, 2, 3, 5, 7일
   certificationTime: number; // 0 ~ 23시
+  status: PostStatus; //1: 진행 중, 2: 달성 성공, 3: 달성 실패
   createdAt: string;
   updatedAt: string;
   deletedAt?: string;
@@ -26,6 +28,7 @@ class Post extends Model<PostAttributes> {
   certificationEndDate!: string;
   certificationCycle!: number;
   certificationTime!: number;
+  status!: PostStatus;
   createdAt!: string;
   updatedAt!: string;
   deletedAt?: string;
@@ -74,6 +77,11 @@ class Post extends Model<PostAttributes> {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
+        status: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: PostStatus.IN_PROGRESS,
+        },
         createdAt: {
           type: DataTypes.DATE,
           allowNull: false,
@@ -87,7 +95,7 @@ class Post extends Model<PostAttributes> {
         deletedAt: {
           type: DataTypes.DATE,
           allowNull: true,
-          defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+          defaultValue: null,
         },
       },
       {

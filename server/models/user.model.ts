@@ -73,7 +73,7 @@ class User extends Model<UserAttributes> {
         deletedAt: {
           type: DataTypes.DATE,
           allowNull: true,
-          defaultValue: Sequelize.literal("CURRENT_TIMESTAMP"),
+          defaultValue: null,
         },
       },
       {

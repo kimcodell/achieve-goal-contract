@@ -1,8 +1,8 @@
 import { HttpStatus } from "./../utils/Constants";
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { ErrorWithCode } from "../interfaces/ErrorWithCode";
 
-const errorHandler = (err: any, req: Request, res: Response) => {
+const errorHandler = (err: any, req: Request, res: Response, next: NextFunction) => {
   console.log(`Error Path: ${req.path}`, err);
 
   if (err instanceof ErrorWithCode) {
@@ -38,6 +38,14 @@ const extractMessageFromJoi = (message: string): string => {
   }
   if (message.match(/.*.must be a valid email/)) {
     return `올바른 이메일 형식이 아닙니다.`;
+  }
+  if (message.match(/.*.length must be less than or equal to .*. characters long/)) {
+    const word = extractQuoteFromMessage(message);
+    return `${word}의 입력 값이 너무 깁니다.`;
+  }
+  if (message.match(/.*.must have at least 1 key/)) {
+    const word = extractQuoteFromMessage(message);
+    return `최소 1개 이상의 값을 입력해 주세요.`;
   }
   return message;
 };
