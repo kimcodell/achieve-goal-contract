@@ -9,8 +9,9 @@ export default class UserService {
       where: { id: userId, deletedAt: null },
       attributes: { include: ["id", "name", "nickname", "registerType", "email", "walletAddress", "createdAt"] },
     });
+
     if (!user) {
-      throw new ErrorWithCode("CANNOT FIND USER", "해당 유저는 존재하지 않거나 탈퇴하였습니다.");
+      throw new ErrorWithCode("INVALID USER", "해당 유저는 존재하지 않거나 이미 탈퇴하였습니다.");
     }
     return user;
   }
@@ -18,12 +19,23 @@ export default class UserService {
   public async update(params: { userId: number; nickname: string; walletAddress: string }) {
     const { userId, nickname, walletAddress } = params;
 
-    if (!this.existUser({ userId })) {
-      throw new ErrorWithCode("CANNOT FIND USER", "해당 유저는 존재하지 않거나 탈퇴하였습니다.");
+    const isValidUser = await this.existUser({ userId });
+    if (!isValidUser) {
+      throw new ErrorWithCode("INVALID USER", "해당 유저는 존재하지 않거나 이미 탈퇴하였습니다.");
     }
 
     const updatedValue = { ...(nickname ? { nickname } : {}), ...(walletAddress ? { walletAddress } : {}) };
     await User.update(updatedValue, { where: { id: userId, deletedAt: null } });
+  }
+
+  public async delete(params: { userId: number }) {
+    const { userId } = params;
+
+    const isValidUser = await this.existUser({ userId });
+    if (!isValidUser) {
+      throw new ErrorWithCode("INVALID USER", "해당 유저는 존재하지 않거나 이미 탈퇴하였습니다.");
+    }
+    await User.update({ deletedAt: new Date().toISOString() }, { where: { id: userId } });
   }
 
   public async existUser(params: { userId: number }) {
