@@ -1,4 +1,5 @@
 import { NextFunction, Request, Response } from "express";
+import { HttpStatus } from "./Constants";
 
 export const wrap = (func: Function) => {
   return async (req: Request, res: Response, next: NextFunction, ...args: any[]) => {
@@ -9,3 +10,7 @@ export const wrap = (func: Function) => {
     }
   };
 };
+
+export const successResponse = (res: Response, data: any) => {
+  res.status(HttpStatus.OK).send({success: true, data});
+}

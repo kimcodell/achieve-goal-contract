@@ -7,7 +7,7 @@ export default class UserService {
 
     const user = await User.findOne({
       where: { id: userId, deletedAt: null },
-      attributes: { include: ["id", "name", "nickname", "registerType", "email", "walletAddress", "createdAt"] },
+      attributes: ["id", "name", "nickname", "registerType", "email", "walletAddress", "createdAt"],
     });
 
     if (!user) {
@@ -40,7 +40,7 @@ export default class UserService {
 
   public async existUser(params: { userId: number }) {
     const { userId: id } = params;
-    const user = await User.findOne({ where: { id, deletedAt: null }, attributes: { include: ["id"] } });
+    const user = await User.findOne({ where: { id, deletedAt: null }, attributes: ["id"] });
     if (user) {
       return true;
     } else {

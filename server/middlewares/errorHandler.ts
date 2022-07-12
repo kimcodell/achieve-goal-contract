@@ -9,6 +9,7 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
     const { code, message, options } = err;
 
     res.status(options?.status || HttpStatus.BAD_REQUEST).send({
+      success: false,
       error: {
         code,
         message,
@@ -16,8 +17,9 @@ const errorHandler = (err: any, req: Request, res: Response, next: NextFunction)
       },
     });
   } else {
-    const extractedMessage = extractMessageFromJoi(err.message || "");
+    const extractedMessage = extractMessageFromJoi(err?.message || "");
     res.status(HttpStatus.BAD_REQUEST).send({
+      success: false,
       error: {
         message: extractedMessage,
       },
