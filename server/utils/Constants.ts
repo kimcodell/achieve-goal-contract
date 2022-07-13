@@ -10,3 +10,5 @@ export const TransactionJobName = Object.freeze({
   EXCHANGE_TOKEN_TO_MONEY: "환전 - 토큰 환전",
   EXCAHNGE_MONEY_TO_TOKEN: "환전 - 토큰 구매",
 });
+
+export const DayToMillisecondsOffset = 24 * 60 * 60 * 1000;
