@@ -47,12 +47,15 @@ export default class PostService {
     if (distributionTokenAmount) {
       await this._checkTokenAmount({ userId, tokenAmount: distributionTokenAmount });
     }
+    //TODO 배당 토큰을 수정해도 되는지?
+    //TODO 업데이트가 가능한 조건은?
     const data = _.omitBy(_.omit(params, ["userId", "id"]), _.isNil);
     await Post.update(data, { where: { id } });
   }
 
   public async delete(params: { userId: number; postId: number }) {
     await this._checkUserIsAuthor(params);
+    //TODO status가 진행 중 + 댓글 X or 종료 인지 체크
     await Post.destroy({ where: { id: params.postId } });
   }
 
