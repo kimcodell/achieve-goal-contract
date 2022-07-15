@@ -1,25 +1,26 @@
+import _ from "lodash";
 import { ErrorWithCode } from "../interfaces/ErrorWithCode";
 import Post from "../models/post.model";
-import User from "../models/user.model";
+import PostRepository from "../repositories/post.repository";
 import WritingPostDto from "../types/dtos/WritingPost.dto";
-import { DayToMillisecondsOffset } from "../utils/Constants";
 
 export default class PostService {
+  constructor(private postRepository: PostRepository) {}
+
   public async getAllPosts() {
-    const posts = await Post.findAll({
-      where: { deletedAt: null },
-      include: { model: User, attributes: [["id", "userId"], "nickname"] },
-      attributes: [["id", "postId"], "userId", "title", "distributionTokenAmount", "status", "createdAt"],
-    });
+    const posts = await this.postRepository.findAllPost();
     return posts;
   }
 
-  public async getPostById(params: { postId: number }) {}
+  public async getPostById(params: { postId: number }) {
+    const post = await this.postRepository.findById(params.postId);
+    return post;
+  }
 
   //TODO 월렛과 배당 토큰 비교 & 시작일과 종료일 비교
   public async create(params: WritingPostDto) {
-    await this._checkTokenAmount({ userId: params.userId, tokenAmount: params.distributionTokenAmount });
     await this._checkValidDate({ startDate: params.certificationStartDate, endDate: params.certificationEndDate, cycle: params.certificationCycle });
+    await this._checkTokenAmount({ userId: params.userId, tokenAmount: params.distributionTokenAmount });
 
     const newPost = await Post.create(params);
     return newPost;
@@ -34,12 +35,18 @@ export default class PostService {
     distributionTokenAmount?: string;
     certificationTime?: number;
   }) {
-    await this._checkUserIsAuthor({ userId: params.userId, postId: params.id });
-    // await this._checkValidPostData(params);
+    const { userId, id, distributionTokenAmount } = params;
+    await this._checkUserIsAuthor({ userId, postId: id });
+    if (distributionTokenAmount) {
+      await this._checkTokenAmount({ userId, tokenAmount: distributionTokenAmount });
+    }
+    const data = _.omitBy(_.omit(params, ["userId", "id"]), _.isNil);
+    await Post.update(data, { where: { id } });
   }
 
   public async delete(params: { userId: number; postId: number }) {
     await this._checkUserIsAuthor(params);
+    await Post.destroy({ where: { id: params.postId } });
   }
 
   private async _checkUserIsAuthor(params: { userId: number; postId: number }) {
@@ -55,8 +62,8 @@ export default class PostService {
   private async _checkValidDate(params: { startDate: string | Date; endDate: string | Date; cycle: number }) {
     const startDate = new Date(params.startDate);
     const endDate = new Date(params.endDate);
-
-    const oneCycledDate = new Date(startDate.getDate() + params.cycle * DayToMillisecondsOffset);
+    const oneCycledDate = startDate;
+    oneCycledDate.setDate(oneCycledDate.getDate() + params.cycle);
     if (oneCycledDate < endDate) {
       return;
     }

@@ -84,7 +84,9 @@ class User extends Model<UserAttributes> {
     );
   }
 
-  static associate(db: Database) {}
+  static associate(db: Database) {
+    db.User.hasMany(db.Post);
+  }
 }
 
 export default User;

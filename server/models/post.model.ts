@@ -106,7 +106,11 @@ class Post extends Model<PostAttributes> {
     );
   }
 
-  static associate(db: Database) {}
+  static associate(db: Database) {
+    db.Post.belongsTo(db.User);
+    db.Post.hasMany(db.Comment);
+    db.Post.hasMany(db.CertiPost);
+  }
 }
 
 export default Post;

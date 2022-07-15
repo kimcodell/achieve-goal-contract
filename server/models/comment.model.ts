@@ -65,7 +65,10 @@ class Comment extends Model<CommentAttributes> {
     );
   }
 
-  static associate(db: Database) {}
+  static associate(db: Database) {
+    db.Comment.belongsTo(db.Post);
+    db.Comment.belongsTo(db.User);
+  }
 }
 
 export default Comment;

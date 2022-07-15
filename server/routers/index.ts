@@ -6,10 +6,13 @@ import commentRouter from "./comment.router";
 import transactionRouter from "./transaction.router";
 import UserService from "../services/user.service";
 import PostService from "../services/post.service";
+import PostRepository from "../repositories/post.repository";
 
 const createRootRouter = () => {
+  const postRepository = new PostRepository();
+
   const userService = new UserService();
-  const postService = new PostService();
+  const postService = new PostService(postRepository);
 
   const router = Router();
 

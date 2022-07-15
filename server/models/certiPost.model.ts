@@ -57,7 +57,9 @@ class CertiPost extends Model<CertiPostAttributes> {
     );
   }
 
-  static associate(db: Database) {}
+  static associate(db: Database) {
+    db.CertiPost.belongsTo(db.Post);
+  }
 }
 
 export default CertiPost;
