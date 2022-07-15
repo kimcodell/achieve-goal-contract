@@ -1,5 +1,5 @@
-import { Database } from ".";
 import { DataTypes, Sequelize, Model } from "sequelize";
+import { Database } from ".";
 import { RegisterType } from "../types";
 
 export interface UserAttributes {

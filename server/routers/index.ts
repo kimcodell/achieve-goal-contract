@@ -17,7 +17,7 @@ const createRootRouter = () => {
   const router = Router();
 
   router.get("", (req: Request, res: Response) => {
-    return res.send("api server");
+    res.send("api server");
   });
 
   router.use("/v1/auth", authRouter());
