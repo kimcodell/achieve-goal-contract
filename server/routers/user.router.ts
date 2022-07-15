@@ -8,21 +8,21 @@ class RouteHandler {
 
   public async getMyInfo(req: Request, res: Response, next: NextFunction, data: any) {
     try {
-      const myInfo = await this.userService.findById({ userId: data.id }); //TODO auth guard 넣어서 id 추가
+      const myInfo = await this.userService.getUserById({ userId: data.id }); //TODO auth guard 넣어서 id 추가
       successResponse(res, myInfo);
     } catch (error) {
       next(error)
     }
   }
 
-  public async findById(req: Request, res: Response, next: NextFunction) {
+  public async getUserById(req: Request, res: Response, next: NextFunction) {
     try {
       const { error, value } = Joi.object({
         userId: Joi.number().required(),
       }).validate(req.params);
       if (error) throw error;
       const { userId } = value;
-      const user = await this.userService.findById({ userId });
+      const user = await this.userService.getUserById({ userId });
       delete user.walletAddress;
       successResponse(res, user);
     } catch (error) {
@@ -61,7 +61,7 @@ function userRouter(...parasms: [UserService]) {
   const handler = new RouteHandler(...parasms);
 
   router.get("/me", wrap(handler.getMyInfo.bind(handler)));
-  router.get("/:userId", wrap(handler.findById.bind(handler)));
+  router.get("/:userId", wrap(handler.getUserById.bind(handler)));
   router.put("", wrap(handler.update.bind(handler)));
   router.delete("", wrap(handler.withdraw.bind(handler)));
 

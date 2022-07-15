@@ -2,7 +2,7 @@ import { ErrorWithCode } from "./../interfaces/ErrorWithCode";
 import User from "../models/user.model";
 
 export default class UserService {
-  public async findById(params: { userId: number }) {
+  public async getUserById(params: { userId: number }) {
     const { userId } = params;
 
     const user = await User.findOne({

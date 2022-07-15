@@ -9,12 +9,12 @@ export default class PostService {
   constructor(private postRepository: PostRepository, private userRepository: UserRepository) {}
 
   public async getAllPosts() {
-    const posts = await this.postRepository.findAllPost();
+    const posts = await this.postRepository.getAllPost();
     return posts;
   }
 
   public async getPostById(params: { postId: number }) {
-    const post = await this.postRepository.findById(params.postId);
+    const post = await this.postRepository.getPostById(params.postId);
     return post;
   }
 

@@ -7,7 +7,7 @@ import CommentRepository from './comment.repository';
 export default class PostRepository {
   constructor(private sequelize: Sequelize, private commentRepository: CommentRepository, private certiPostRepository: CertiPostRepository) {}
 
-  public async findAllPost() {
+  public async getAllPost() {
     const posts = await Post.findAll({
       where: { deletedAt: null },
       include: [{ model: User, attributes: [] }],
@@ -17,7 +17,7 @@ export default class PostRepository {
     return posts;
   }
 
-  public async findById(postId: number) {
+  public async getPostById(postId: number) {
     const post = await Post.findOne({
       where: { id: postId, deletedAt: null },
       attributes: [
@@ -39,7 +39,7 @@ export default class PostRepository {
 
     }) as Post & {nickname: string;};
     if (!post) throw new Error("존재하지 않는 게시글입니다.");
-    const [comments, certiPosts] = await Promise.all([this.commentRepository.findCommentsOfPostId(postId), this.certiPostRepository.findCertiPostsOfPostId(postId)])
+    const [comments, certiPosts] = await Promise.all([this.commentRepository.getCommentsOfPostId(postId), this.certiPostRepository.getCertiPostsOfPostId(postId)])
 
     return {
       postId: post.id,
