@@ -7,7 +7,8 @@ function commentRouter() {
   const router = Router();
   const handler = new RouteHandler();
 
-  // router.get("/", wrap(handler.method.bind(handler)));
+  // router.post("/", wrap(handler.create.bind(handler)));
+  // router.put("/", wrap(handler.update.bind(handler)));
 
   return router;
 }

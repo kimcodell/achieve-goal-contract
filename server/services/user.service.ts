@@ -1,5 +1,6 @@
 import { ErrorWithCode } from "./../interfaces/ErrorWithCode";
 import User from "../models/user.model";
+import _ from "lodash";
 
 export default class UserService {
   public async getUserById(params: { userId: number }) {
@@ -17,14 +18,14 @@ export default class UserService {
   }
 
   public async update(params: { userId: number; nickname: string; walletAddress: string }) {
-    const { userId, nickname, walletAddress } = params;
+    const { userId } = params;
 
     const isValidUser = await this.existUser({ userId });
     if (!isValidUser) {
       throw new ErrorWithCode("INVALID USER", "해당 유저는 존재하지 않거나 이미 탈퇴하였습니다.");
     }
 
-    const updatedValue = { ...(nickname ? { nickname } : {}), ...(walletAddress ? { walletAddress } : {}) };
+    const updatedValue = _.omitBy(_.omit(params, "userId"), _.isNil);
     await User.update(updatedValue, { where: { id: userId, deletedAt: null } });
   }
 

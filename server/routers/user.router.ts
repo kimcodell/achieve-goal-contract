@@ -1,14 +1,16 @@
 import { NextFunction, Request, Response, Router } from "express";
 import Joi from "joi";
+import { authGuard } from "../guards/auth.guard";
 import UserService from "../services/user.service";
 import { successResponse, wrap } from "../utils/ExpressUtils";
 
 class RouteHandler {
   constructor(private userService: UserService) {}
 
+  @authGuard
   public async getMyInfo(req: Request, res: Response, next: NextFunction, data: any) {
     try {
-      const myInfo = await this.userService.getUserById({ userId: data.id }); //TODO auth guard 넣어서 id 추가
+      const myInfo = await this.userService.getUserById({ userId: data.id });
       successResponse(res, myInfo);
     } catch (error) {
       next(error);
@@ -30,6 +32,7 @@ class RouteHandler {
     }
   }
 
+  @authGuard
   public async update(req: Request, res: Response, next: NextFunction, data: any) {
     try {
       const { error, value } = Joi.object({
@@ -39,16 +42,17 @@ class RouteHandler {
         .min(1)
         .validate(req.body);
       if (error) throw error;
-      await this.userService.update({ ...value, userId: 1 }); //TODO auth guard 추가 후 userId 추가
+      await this.userService.update({ ...value, userId: data.id });
       successResponse(res, {});
     } catch (error) {
       next(error);
     }
   }
 
+  @authGuard
   public async withdraw(req: Request, res: Response, next: NextFunction, data: any) {
     try {
-      await this.userService.delete({ userId: 1 }); //TODO auth guard 추가 후 userId 추가
+      await this.userService.delete({ userId: data.id });
       successResponse(res, {});
     } catch (error) {
       next(error);
