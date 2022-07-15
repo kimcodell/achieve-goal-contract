@@ -1,8 +1,8 @@
-import { Sequelize } from 'sequelize';
+import { Sequelize } from "sequelize";
 import Post from "../models/post.model";
 import User from "../models/user.model";
-import CertiPostRepository from './certiPost.repository';
-import CommentRepository from './comment.repository';
+import CertiPostRepository from "./certiPost.repository";
+import CommentRepository from "./comment.repository";
 
 export default class PostRepository {
   constructor(private sequelize: Sequelize, private commentRepository: CommentRepository, private certiPostRepository: CertiPostRepository) {}
@@ -18,7 +18,7 @@ export default class PostRepository {
   }
 
   public async getPostById(postId: number) {
-    const post = await Post.findOne({
+    const post = (await Post.findOne({
       where: { id: postId, deletedAt: null },
       attributes: [
         "id",
@@ -36,10 +36,12 @@ export default class PostRepository {
       ],
       raw: true,
       include: { model: User, attributes: [] },
-
-    }) as Post & {nickname: string;};
+    })) as Post & { nickname: string };
     if (!post) throw new Error("존재하지 않는 게시글입니다.");
-    const [comments, certiPosts] = await Promise.all([this.commentRepository.getCommentsOfPostId(postId), this.certiPostRepository.getCertiPostsOfPostId(postId)])
+    const [comments, certiPosts] = await Promise.all([
+      this.commentRepository.getCommentsOfPostId(postId),
+      this.certiPostRepository.getCertiPostsOfPostId(postId),
+    ]);
 
     return {
       postId: post.id,
@@ -56,6 +58,6 @@ export default class PostRepository {
       createdAt: post.createdAt,
       comments,
       certiPosts,
-    }
+    };
   }
 }

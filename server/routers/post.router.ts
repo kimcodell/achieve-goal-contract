@@ -11,7 +11,7 @@ class RouteHandler {
       const posts = await this.postService.getAllPosts();
       successResponse(res, posts);
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -25,7 +25,7 @@ class RouteHandler {
       const post = await this.postService.getPostById({ postId });
       successResponse(res, post);
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -61,7 +61,7 @@ class RouteHandler {
       await this.postService.update({ ...value, userId: 1 }); //TODO auth guard 추가 후 수정
       successResponse(res, {});
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -75,7 +75,7 @@ class RouteHandler {
       await this.postService.delete({ postId, userId: 1 }); //TODO auth guard 추가 후 수정
       successResponse(res, {});
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 }

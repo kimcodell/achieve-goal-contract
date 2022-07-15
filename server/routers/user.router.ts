@@ -11,7 +11,7 @@ class RouteHandler {
       const myInfo = await this.userService.getUserById({ userId: data.id }); //TODO auth guard 넣어서 id 추가
       successResponse(res, myInfo);
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -26,7 +26,7 @@ class RouteHandler {
       delete user.walletAddress;
       successResponse(res, user);
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -42,7 +42,7 @@ class RouteHandler {
       await this.userService.update({ ...value, userId: 1 }); //TODO auth guard 추가 후 userId 추가
       successResponse(res, {});
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 
@@ -51,7 +51,7 @@ class RouteHandler {
       await this.userService.delete({ userId: 1 }); //TODO auth guard 추가 후 userId 추가
       successResponse(res, {});
     } catch (error) {
-      next(error)
+      next(error);
     }
   }
 }

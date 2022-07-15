@@ -1,8 +1,10 @@
 import _ from "lodash";
-import { ErrorWithCode } from "../interfaces/ErrorWithCode";
 import Post from "../models/post.model";
+import Comment from "../models/comment.model";
 import PostRepository from "../repositories/post.repository";
 import UserRepository from "../repositories/user.repository";
+import { ErrorWithCode } from "../interfaces/ErrorWithCode";
+import { PostStatus } from "./../types/index";
 import WritingPostDto from "../types/dtos/WritingPost.dto";
 
 export default class PostService {
@@ -47,18 +49,22 @@ export default class PostService {
     if (distributionTokenAmount) {
       await this._checkTokenAmount({ userId, tokenAmount: distributionTokenAmount });
     }
-    //TODO 배당 토큰을 수정해도 되는지?
-    //TODO 업데이트가 가능한 조건은?
+    const isEditable = !(await this._isEditable({ postId: id }));
+    if (!isEditable) {
+      throw new ErrorWithCode("NOT EDITABLE POST", "목표 달성이 진행 중이고 응원 댓글이 없는 게시글만 수정할 수 있습니다.");
+    }
     const data = _.omitBy(_.omit(params, ["userId", "id"]), _.isNil);
     await Post.update(data, { where: { id } });
   }
 
   public async delete(params: { userId: number; postId: number }) {
     await this._checkUserIsAuthor(params);
-    //TODO status가 진행 중 + 댓글 X or 종료 인지 체크
+    const isEditable = await this._isEditable({ postId: params.postId });
+    if (!isEditable) {
+      throw new ErrorWithCode("NOT EDITABLE POST", "목표 달성이 진행 중이고 응원 댓글이 없는 게시글만 삭제할 수 있습니다.");
+    }
     await Post.destroy({ where: { id: params.postId } });
   }
-
 
   private async _checkUserIsAuthor(params: { userId: number; postId: number }) {
     const { userId, postId } = params;
@@ -79,5 +85,14 @@ export default class PostService {
       return;
     }
     throw new ErrorWithCode("INVALID DURATION", "기간이 유효하지 않습니다.");
+  }
+
+  private async _isEditable(params: { postId: number }) {
+    const post = await Post.findOne({ where: { id: params.postId, deletedAt: null }, attributes: ["status"] });
+    const comment = await Comment.findOne({ where: { postId: params.postId, deletedAt: null }, attributes: ["id"] });
+    if (post.status === PostStatus.IN_PROGRESS && !comment) {
+      return true;
+    }
+    return false;
   }
 }

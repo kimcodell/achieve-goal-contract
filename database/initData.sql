@@ -26,9 +26,9 @@ INSERT INTO `achieve-goal-contract`.`certiPost` (`postId`, `comment`, `imageUrl`
 INSERT INTO `achieve-goal-contract`.`certiPost` (`postId`, `comment`, `imageUrl`, `createdAt`) VALUES ('7', '인증', 'http://t1.daumcdn.net/friends/prod/editor/dc8b3d02-a15a-4afa-a88b-989cf2a50476.jpg', '2022-07-15 10:56:29');
 
 -- comment 데이터
-INSERT INTO `achieve-goal-contract`.`comment` (`postId`, `userId`, `content`) VALUES ('1', '2', '응원합니다.');
-INSERT INTO `achieve-goal-contract`.`comment` (`postId`, `userId`, `content`) VALUES ('1', '4', '응원합니다.');
-INSERT INTO `achieve-goal-contract`.`comment` (`postId`, `userId`, `content`) VALUES ('3', '1', '응원합니다.');
-INSERT INTO `achieve-goal-contract`.`comment` (`postId`, `userId`, `content`) VALUES ('5', '5', '응원합니다.');
-INSERT INTO `achieve-goal-contract`.`comment` (`postId`, `userId`, `content`) VALUES ('8', '1', '응원합니다.');
-INSERT INTO `achieve-goal-contract`.`comment` (`postId`, `userId`, `content`) VALUES ('7', '1', '응원합니다.');
+INSERT INTO `achieve-goal-contract`.`comment` (`postId`, `userId`, `comment`) VALUES ('1', '2', '응원합니다.');
+INSERT INTO `achieve-goal-contract`.`comment` (`postId`, `userId`, `comment`) VALUES ('1', '4', '응원합니다.');
+INSERT INTO `achieve-goal-contract`.`comment` (`postId`, `userId`, `comment`) VALUES ('3', '1', '응원합니다.');
+INSERT INTO `achieve-goal-contract`.`comment` (`postId`, `userId`, `comment`) VALUES ('5', '5', '응원합니다.');
+INSERT INTO `achieve-goal-contract`.`comment` (`postId`, `userId`, `comment`) VALUES ('8', '1', '응원합니다.');
+INSERT INTO `achieve-goal-contract`.`comment` (`postId`, `userId`, `comment`) VALUES ('7', '1', '응원합니다.');
