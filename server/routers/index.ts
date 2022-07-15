@@ -20,7 +20,7 @@ const createRootRouter = (sequelize: Sequelize) => {
   const postRepository = new PostRepository(sequelize, commentRepository, certiPostRepository);
 
   const userService = new UserService();
-  const postService = new PostService(postRepository);
+  const postService = new PostService(postRepository, userRepository);
 
   const router = Router();
 

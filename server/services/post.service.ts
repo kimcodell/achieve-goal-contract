@@ -2,10 +2,11 @@ import _ from "lodash";
 import { ErrorWithCode } from "../interfaces/ErrorWithCode";
 import Post from "../models/post.model";
 import PostRepository from "../repositories/post.repository";
+import UserRepository from "../repositories/user.repository";
 import WritingPostDto from "../types/dtos/WritingPost.dto";
 
 export default class PostService {
-  constructor(private postRepository: PostRepository) {}
+  constructor(private postRepository: PostRepository, private userRepository: UserRepository) {}
 
   public async getAllPosts() {
     const posts = await this.postRepository.findAllPost();
@@ -17,8 +18,11 @@ export default class PostService {
     return post;
   }
 
-  //TODO 월렛과 배당 토큰 비교 & 시작일과 종료일 비교
   public async create(params: WritingPostDto) {
+    const walletAddress = await this.userRepository.getWalletAddress(params.userId);
+    if (!walletAddress) {
+      throw new ErrorWithCode("WALLET ADDRESS IS REQUIRED", "등록된 지갑 주소가 없습니다. 지갑을 등록한 후 게시글을 작성해 주세요.");
+    }
     await this._checkValidDate({ startDate: params.certificationStartDate, endDate: params.certificationEndDate, cycle: params.certificationCycle });
     await this._checkTokenAmount({ userId: params.userId, tokenAmount: params.distributionTokenAmount });
 
@@ -26,7 +30,6 @@ export default class PostService {
     return newPost;
   }
 
-  //TODO 월렛이 있으면 => 배당 토큰 비교
   public async update(params: {
     userId: number;
     id: number;
@@ -37,6 +40,10 @@ export default class PostService {
   }) {
     const { userId, id, distributionTokenAmount } = params;
     await this._checkUserIsAuthor({ userId, postId: id });
+    const walletAddress = await this.userRepository.getWalletAddress(params.userId);
+    if (!walletAddress) {
+      throw new ErrorWithCode("WALLET ADDRESS IS REQUIRED", "등록된 지갑 주소가 없습니다. 지갑을 등록한 후 게시글을 수정해 주세요.");
+    }
     if (distributionTokenAmount) {
       await this._checkTokenAmount({ userId, tokenAmount: distributionTokenAmount });
     }
@@ -49,11 +56,12 @@ export default class PostService {
     await Post.destroy({ where: { id: params.postId } });
   }
 
+
   private async _checkUserIsAuthor(params: { userId: number; postId: number }) {
     const { userId, postId } = params;
     const post = await Post.findOne({ where: { id: postId, deletedAt: null }, attributes: ["userId"] });
     if (post.userId !== userId) {
-      throw new Error("해당 게시물의 작성자가 아닙니다.");
+      throw new ErrorWithCode("INVALID AUTHOR", "해당 게시물의 작성자가 아닙니다.");
     }
   }
 

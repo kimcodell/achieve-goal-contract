@@ -7,56 +7,76 @@ class RouteHandler {
   constructor(private postService: PostService) {}
 
   public async getAllPosts(req: Request, res: Response, next: NextFunction, data: any) {
-    const posts = await this.postService.getAllPosts();
-    successResponse(res, posts);
-  }
-
-  public async create(req: Request, res: Response, next: NextFunction, data: any) {
-    const { error, value } = Joi.object({
-      title: Joi.string().required(),
-      content: Joi.string().required(),
-      distributionTokenAmount: Joi.string().required(),
-      certificationStartDate: Joi.string().required(),
-      certificationEndDate: Joi.string().required(),
-      certificationCycle: Joi.number().required(),
-      certificationTime: Joi.number().required(),
-    }).validate(req.body);
-    if (error) throw error;
-    const newPost = await this.postService.create({ ...value, userId: 1 }); //TODO auth guard 추가 후 수정
-    successResponse(res, newPost);
-  }
-
-  public async update(req: Request, res: Response, next: NextFunction, data: any) {
-    const { error, value } = Joi.object({
-      id: Joi.number().required(),
-      title: Joi.string().optional(),
-      content: Joi.string().optional(),
-      distributionTokenAmount: Joi.string().optional(),
-      certificationTime: Joi.number().optional(),
-    }).validate(req.body);
-    if (error) throw error;
-    await this.postService.update({ ...value, userId: 1 }); //TODO auth guard 추가 후 수정
-    successResponse(res, {});
-  }
-
-  public async delete(req: Request, res: Response, next: NextFunction, data: any) {
-    const { error, value } = Joi.object({
-      postId: Joi.number().required(),
-    }).validate(req.body);
-    if (error) throw error;
-    const { postId } = value;
-    await this.postService.delete({ postId, userId: 1 }); //TODO auth guard 추가 후 수정
-    successResponse(res, {});
+    try {
+      const posts = await this.postService.getAllPosts();
+      successResponse(res, posts);
+    } catch (error) {
+      next(error)
+    }
   }
 
   public async getPostById(req: Request, res: Response, next: NextFunction, data: any) {
-    const { error, value } = Joi.object({
-      postId: Joi.number().required(),
-    }).validate(req.params);
-    if (error) throw error;
-    const { postId } = value;
-    const post = await this.postService.getPostById({ postId });
-    successResponse(res, post);
+    try {
+      const { error, value } = Joi.object({
+        postId: Joi.number().required(),
+      }).validate(req.params);
+      if (error) throw error;
+      const { postId } = value;
+      const post = await this.postService.getPostById({ postId });
+      successResponse(res, post);
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  public async create(req: Request, res: Response, next: NextFunction, data: any) {
+    try {
+      const { error, value } = Joi.object({
+        title: Joi.string().required(),
+        content: Joi.string().required(),
+        distributionTokenAmount: Joi.string().required(),
+        certificationStartDate: Joi.string().required(),
+        certificationEndDate: Joi.string().required(),
+        certificationCycle: Joi.number().required(),
+        certificationTime: Joi.number().required(),
+      }).validate(req.body);
+      if (error) throw error;
+      const newPost = await this.postService.create({ ...value, userId: 1 }); //TODO auth guard 추가 후 수정
+      successResponse(res, newPost);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  public async update(req: Request, res: Response, next: NextFunction, data: any) {
+    try {
+      const { error, value } = Joi.object({
+        id: Joi.number().required(),
+        title: Joi.string().optional(),
+        content: Joi.string().optional(),
+        distributionTokenAmount: Joi.string().optional(),
+        certificationTime: Joi.number().optional(),
+      }).validate(req.body);
+      if (error) throw error;
+      await this.postService.update({ ...value, userId: 1 }); //TODO auth guard 추가 후 수정
+      successResponse(res, {});
+    } catch (error) {
+      next(error)
+    }
+  }
+
+  public async delete(req: Request, res: Response, next: NextFunction, data: any) {
+    try {
+      const { error, value } = Joi.object({
+        postId: Joi.number().required(),
+      }).validate(req.body);
+      if (error) throw error;
+      const { postId } = value;
+      await this.postService.delete({ postId, userId: 1 }); //TODO auth guard 추가 후 수정
+      successResponse(res, {});
+    } catch (error) {
+      next(error)
+    }
   }
 }
 

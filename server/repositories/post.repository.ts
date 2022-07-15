@@ -39,7 +39,7 @@ export default class PostRepository {
 
     }) as Post & {nickname: string;};
     if (!post) throw new Error("존재하지 않는 게시글입니다.");
-    const [comments, certiPost] = await Promise.all([this.commentRepository.findCommentsOfPostId(postId), this.certiPostRepository.findCertiPostsOfPostId(postId)])
+    const [comments, certiPosts] = await Promise.all([this.commentRepository.findCommentsOfPostId(postId), this.certiPostRepository.findCertiPostsOfPostId(postId)])
 
     return {
       postId: post.id,
@@ -55,7 +55,7 @@ export default class PostRepository {
       status: post.status,
       createdAt: post.createdAt,
       comments,
-      certiPost,
+      certiPosts,
     }
   }
 }
