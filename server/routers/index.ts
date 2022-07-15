@@ -1,3 +1,4 @@
+import { Sequelize } from 'sequelize';
 import { Request, Response, Router } from "express";
 import authRouter from "./auth.router";
 import userRouter from "./user.router";
@@ -7,9 +8,16 @@ import transactionRouter from "./transaction.router";
 import UserService from "../services/user.service";
 import PostService from "../services/post.service";
 import PostRepository from "../repositories/post.repository";
+import CertiPostRepository from '../repositories/certiPost.repository';
+import CommentRepository from '../repositories/comment.repository';
+import UserRepository from '../repositories/user.repository';
 
-const createRootRouter = () => {
-  const postRepository = new PostRepository();
+const createRootRouter = (sequelize: Sequelize) => {
+
+  const userRepository = new UserRepository();
+  const commentRepository = new CommentRepository();
+  const certiPostRepository = new CertiPostRepository();
+  const postRepository = new PostRepository(sequelize, commentRepository, certiPostRepository);
 
   const userService = new UserService();
   const postService = new PostService(postRepository);

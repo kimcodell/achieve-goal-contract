@@ -16,8 +16,6 @@ export default class App {
   public async setUp(): Promise<Express> {
     const app = express();
 
-    db.sequelize.sync({ force: false }).then(() => console.log("success")); //TODO 추후 수정
-
     app.use(express.urlencoded({ extended: false }));
     app.use(express.json());
 
@@ -33,7 +31,7 @@ export default class App {
 
     app.use("/v1/api-docs", serve, setup(swaggerDocument));
 
-    const router = createRootRouter();
+    const router = createRootRouter(db.sequelize);
     app.use("/", router);
 
     app.use(errorHandler);

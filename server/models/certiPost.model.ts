@@ -3,7 +3,7 @@ import { Database } from ".";
 
 export interface CertiPostAttributes {
   id: number;
-  postId: number;
+  postId?: number;
   comment: string;
   imageUrl?: string;
   createdAt: string;
@@ -27,10 +27,10 @@ class CertiPost extends Model<CertiPostAttributes> {
           allowNull: false,
           primaryKey: true,
         },
-        postId: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-        },
+        // postId: {
+        //   type: DataTypes.INTEGER,
+        //   allowNull: false,
+        // },
         comment: {
           type: DataTypes.TEXT,
           allowNull: false,
@@ -53,12 +53,13 @@ class CertiPost extends Model<CertiPostAttributes> {
       {
         sequelize,
         tableName: "certiPost",
+        modelName: "certiPost",
       }
     );
   }
 
   static associate(db: Database) {
-    db.CertiPost.belongsTo(db.Post);
+    db.CertiPost.hasOne(db.Post);
   }
 }
 

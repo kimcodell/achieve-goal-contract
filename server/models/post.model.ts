@@ -4,7 +4,7 @@ import { PostStatus } from "../types";
 
 export interface PostAttributes {
   id: number;
-  userId: number;
+  userId?: number;
   title: string;
   content: string;
   distributionTokenAmount: string;
@@ -42,10 +42,10 @@ class Post extends Model<PostAttributes> {
           allowNull: false,
           primaryKey: true,
         },
-        userId: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-        },
+        // userId: {
+        //   type: DataTypes.INTEGER,
+        //   allowNull: false,
+        // },
         title: {
           type: DataTypes.STRING(200),
           allowNull: false,
@@ -101,6 +101,7 @@ class Post extends Model<PostAttributes> {
       {
         sequelize,
         tableName: "post",
+        modelName: "post",
         paranoid: true,
       }
     );

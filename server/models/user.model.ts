@@ -79,6 +79,7 @@ class User extends Model<UserAttributes> {
       {
         sequelize,
         tableName: "user",
+        modelName: "user",
         paranoid: true,
       }
     );
@@ -86,6 +87,7 @@ class User extends Model<UserAttributes> {
 
   static associate(db: Database) {
     db.User.hasMany(db.Post);
+    db.User.hasMany(db.Comment);
   }
 }
 

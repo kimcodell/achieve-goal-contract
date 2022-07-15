@@ -3,9 +3,9 @@ import { Database } from ".";
 
 export interface CommentAttributes {
   id: number;
-  postId: number;
-  userId: number;
-  content: string;
+  postId?: number;
+  userId?: number;
+  comment: string;
   createdAt: string;
   updatedAt: string;
   deletedAt?: string;
@@ -15,7 +15,7 @@ class Comment extends Model<CommentAttributes> {
   id!: number;
   postId!: number;
   userId!: number;
-  content!: string;
+  comment!: string;
   createdAt!: string;
   updatedAt!: string;
   deletedAt?: string;
@@ -29,15 +29,15 @@ class Comment extends Model<CommentAttributes> {
           allowNull: false,
           primaryKey: true,
         },
-        postId: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-        },
-        userId: {
-          type: DataTypes.INTEGER,
-          allowNull: false,
-        },
-        content: {
+        // postId: {
+        //   type: DataTypes.INTEGER,
+        //   allowNull: false,
+        // },
+        // userId: {
+        //   type: DataTypes.INTEGER,
+        //   allowNull: false,
+        // },
+        comment: {
           type: DataTypes.TEXT,
           allowNull: false,
         },
@@ -60,6 +60,7 @@ class Comment extends Model<CommentAttributes> {
       {
         sequelize,
         tableName: "comment",
+        modelName: "comment",
         paranoid: true,
       }
     );

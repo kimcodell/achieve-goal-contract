@@ -55,7 +55,8 @@ class RouteHandler {
     }).validate(req.params);
     if (error) throw error;
     const { postId } = value;
-    await this.postService.getPostById({ postId });
+    const post = await this.postService.getPostById({ postId });
+    successResponse(res, post);
   }
 }
 
