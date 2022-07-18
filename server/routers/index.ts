@@ -11,6 +11,9 @@ import PostRepository from "../repositories/post.repository";
 import CertiPostRepository from '../repositories/certiPost.repository';
 import CommentRepository from '../repositories/comment.repository';
 import UserRepository from '../repositories/user.repository';
+import certiPostRouter from './certiPost.router';
+import CertiPostService from '../services/certiPost.service';
+import CommentService from '../services/comment.service';
 
 const createRootRouter = (sequelize: Sequelize) => {
 
@@ -19,8 +22,10 @@ const createRootRouter = (sequelize: Sequelize) => {
   const certiPostRepository = new CertiPostRepository();
   const postRepository = new PostRepository(sequelize, commentRepository, certiPostRepository);
 
-  const userService = new UserService();
+  const userService = new UserService(postRepository);
   const postService = new PostService(postRepository, userRepository);
+  const commentService = new CommentService();
+  const certiPostService = new CertiPostService();
 
   const router = Router();
 
@@ -31,7 +36,8 @@ const createRootRouter = (sequelize: Sequelize) => {
   router.use("/v1/auth", authRouter());
   router.use("/v1/user", userRouter(userService));
   router.use("/v1/post", postRouter(postService));
-  router.use("/v1/comment", commentRouter());
+  router.use("/v1/comment", commentRouter(commentService));
+  router.use("v1/certi", certiPostRouter(certiPostService));
   router.use("/v1/transaction", transactionRouter());
 
   return router;

@@ -1,20 +1,33 @@
 import { ErrorWithCode } from "./../interfaces/ErrorWithCode";
 import User from "../models/user.model";
 import _ from "lodash";
+import PostRepository from "../repositories/post.repository";
 
 export default class UserService {
+  constructor(private postRepository: PostRepository) {};
+
   public async getUserById(params: { userId: number }) {
     const { userId } = params;
 
     const user = await User.findOne({
       where: { id: userId, deletedAt: null },
-      attributes: ["id", "name", "nickname", "registerType", "email", "walletAddress", "createdAt"],
+      attributes: ["id", "nickname", "walletAddress", "createdAt"],
     });
-
     if (!user) {
       throw new ErrorWithCode("INVALID USER", "해당 유저는 존재하지 않거나 이미 탈퇴하였습니다.");
     }
-    return user;
+
+    const userPosts = await this.postRepository.getAllPosts(userId);
+    const userComments = await this.postRepository.getAllCommentingPosts(userId);
+
+    return {
+      userId: user.id,
+      nickname: user.nickname,
+      walletAddress: user.walletAddress,
+      createdAt: user.createdAt,
+      posts: userPosts,
+      comments: userComments,
+    };
   }
 
   public async update(params: { userId: number; nickname: string; walletAddress: string }) {

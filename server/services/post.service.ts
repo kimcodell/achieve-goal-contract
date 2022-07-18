@@ -11,7 +11,7 @@ export default class PostService {
   constructor(private postRepository: PostRepository, private userRepository: UserRepository) {}
 
   public async getAllPosts() {
-    const posts = await this.postRepository.getAllPost();
+    const posts = await this.postRepository.getAllPosts();
     return posts;
   }
 
@@ -54,7 +54,7 @@ export default class PostService {
       throw new ErrorWithCode("NOT EDITABLE POST", "목표 달성이 진행 중이고 응원 댓글이 없는 게시글만 수정할 수 있습니다.");
     }
     const data = _.omitBy(_.omit(params, ["userId", "id"]), _.isNil);
-    await Post.update(data, { where: { id } });
+    await Post.update(data, { where: { id, deletedAt: null } });
   }
 
   public async delete(params: { userId: number; postId: number }) {
@@ -63,7 +63,7 @@ export default class PostService {
     if (!isEditable) {
       throw new ErrorWithCode("NOT EDITABLE POST", "목표 달성이 진행 중이고 응원 댓글이 없는 게시글만 삭제할 수 있습니다.");
     }
-    await Post.destroy({ where: { id: params.postId } });
+    await Post.destroy({ where: { id: params.postId, deletedAt: null } });
   }
 
   private async _checkUserIsAuthor(params: { userId: number; postId: number }) {

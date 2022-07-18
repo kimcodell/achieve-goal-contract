@@ -1,4 +1,5 @@
-import { Sequelize } from "sequelize";
+import { Op, Sequelize } from "sequelize";
+import Comment from "../models/comment.model";
 import Post from "../models/post.model";
 import User from "../models/user.model";
 import CertiPostRepository from "./certiPost.repository";
@@ -7,9 +8,9 @@ import CommentRepository from "./comment.repository";
 export default class PostRepository {
   constructor(private sequelize: Sequelize, private commentRepository: CommentRepository, private certiPostRepository: CertiPostRepository) {}
 
-  public async getAllPost() {
+  public async getAllPosts(userId?: number) {
     const posts = await Post.findAll({
-      where: { deletedAt: null },
+      where: { deletedAt: null, ...(userId ? { userId } : {}) },
       include: [{ model: User, attributes: [] }],
       attributes: [["id", "postId"], "userId", "title", "distributionTokenAmount", "status", "createdAt", "User.nickname"],
       raw: true,
@@ -59,5 +60,18 @@ export default class PostRepository {
       comments,
       certiPosts,
     };
+  }
+
+  public async getAllCommentingPosts(userId: number) {
+    const commentingPosts = await Comment.findAll({where: { userId, deletedAt: null }, attributes: ["postId"]});
+    const commentingPostIds = commentingPosts.map(comment => comment.postId);
+
+    const posts = await Post.findAll({
+      where: { id: {[Op.in] : commentingPostIds}, deletedAt: null},
+      attributes: [["id", "postId"], "userId", "title", "distributionTokenAmount", "status", "createdAt", "User.nickname"],
+      raw: true,
+      include: [{model: User, attributes: []}],
+    });
+    return posts;
   }
 }
