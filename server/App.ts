@@ -9,6 +9,7 @@ import createRootRouter from "./routers";
 import errorHandler from "./middlewares/errorHandler";
 import NotFoundErrorHandler from "./middlewares/notFoundErrorHandler";
 import db from "./models";
+import { cryptoHelper } from "./utils/CryptoHelper";
 
 const swaggerDocument = load(fs.readFileSync("./swagger/swagger.yaml", "utf8"));
 
@@ -28,6 +29,7 @@ export default class App {
       })
     );
     app.use(this._allowCookie);
+    this._setCryptoHelper();
 
     app.use("/v1/api-docs", serve, setup(swaggerDocument));
 
@@ -46,5 +48,9 @@ export default class App {
     res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
     res.header("Access-Control-Allow-Headers", "X-Requested-With, X-HTTP-Method-Override, Content-Type, Accept");
     next();
+  }
+
+  private _setCryptoHelper() {
+    cryptoHelper.setup({ jwtSecret: "achieve-goal-contract", bcryptRound: 10 });
   }
 }
