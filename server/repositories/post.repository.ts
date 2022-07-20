@@ -63,14 +63,14 @@ export default class PostRepository {
   }
 
   public async getAllCommentingPosts(userId: number) {
-    const commentingPosts = await Comment.findAll({where: { userId, deletedAt: null }, attributes: ["postId"]});
-    const commentingPostIds = commentingPosts.map(comment => comment.postId);
+    const commentingPosts = await Comment.findAll({ where: { userId, deletedAt: null }, attributes: ["postId"] });
+    const commentingPostIds = commentingPosts.map((comment) => comment.postId);
 
     const posts = await Post.findAll({
-      where: { id: {[Op.in] : commentingPostIds}, deletedAt: null},
+      where: { id: { [Op.in]: commentingPostIds }, deletedAt: null },
       attributes: [["id", "postId"], "userId", "title", "distributionTokenAmount", "status", "createdAt", "User.nickname"],
       raw: true,
-      include: [{model: User, attributes: []}],
+      include: [{ model: User, attributes: [] }],
     });
     return posts;
   }

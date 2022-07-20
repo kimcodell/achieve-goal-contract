@@ -4,7 +4,7 @@ import _ from "lodash";
 import PostRepository from "../repositories/post.repository";
 
 export default class UserService {
-  constructor(private postRepository: PostRepository) {};
+  constructor(private postRepository: PostRepository) {}
 
   public async getUserById(params: { userId: number }) {
     const { userId } = params;

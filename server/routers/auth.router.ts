@@ -56,7 +56,6 @@ class RouteHandler {
 
   public async update(req: Request, res: Response, next: NextFunction) {
     try {
-
     } catch (error) {
       next(error);
     }
@@ -64,7 +63,6 @@ class RouteHandler {
 
   public async checkNicknameDuplication(req: Request, res: Response, next: NextFunction) {
     try {
-
     } catch (error) {
       next(error);
     }
@@ -72,7 +70,6 @@ class RouteHandler {
 
   public async checkEmailDuplication(req: Request, res: Response, next: NextFunction) {
     try {
-
     } catch (error) {
       next(error);
     }

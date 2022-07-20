@@ -2,7 +2,7 @@ import User from "../models/user.model";
 import SignUpDto from "../types/dtos/SignUp.dto";
 
 export default class UserRepository {
-  public async createUser(data: Omit<SignUpDto & {passwordHash: string}, 'password'>) {
+  public async createUser(data: Omit<SignUpDto & { passwordHash: string }, "password">) {
     const newUser = await User.create(data);
     return newUser;
   }
@@ -13,12 +13,12 @@ export default class UserRepository {
   }
 
   public async findUserByNickname(nickname: string) {
-    const user = await User.findOne({where: {nickname, deletedAt: null}})
+    const user = await User.findOne({ where: { nickname, deletedAt: null } });
     return user;
   }
-  
+
   public async findUserByEmail(email: string, includePasswordHash: boolean = false) {
-    const user = await User.findOne({where: {email, deletedAt: null}, attributes: {exclude: ['updatedAt', 'deletedAt']}});
+    const user = await User.findOne({ where: { email, deletedAt: null }, attributes: { exclude: ["updatedAt", "deletedAt"] } });
     if (!includePasswordHash) {
       delete user.passwordHash;
     }
