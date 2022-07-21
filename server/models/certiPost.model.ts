@@ -59,7 +59,7 @@ class CertiPost extends Model<CertiPostAttributes> {
   }
 
   static associate(db: Database) {
-    db.CertiPost.hasOne(db.Post);
+    db.CertiPost.belongsTo(db.Post);
   }
 }
 

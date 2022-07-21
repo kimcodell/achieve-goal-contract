@@ -11,6 +11,10 @@ import NotFoundErrorHandler from "./middlewares/notFoundErrorHandler";
 import db from "./models";
 import { cryptoHelper } from "./utils/CryptoHelper";
 import { interval } from "rxjs";
+import PostRepository from "./repositories/post.repository";
+import TransactionService from "./services/transaction.service";
+import CommentRepository from "./repositories/comment.repository";
+import CertiPostRepository from "./repositories/certiPost.repository";
 
 const swaggerDocument = load(fs.readFileSync("./swagger/swagger.yaml", "utf8"));
 
@@ -34,10 +38,14 @@ export default class App {
 
     app.use("/v1/api-docs", serve, setup(swaggerDocument));
 
-    interval(MillisecondsToHourOffset / 6000).subscribe((hour) => {
+    const commentRepository = new CommentRepository();
+    const certiPostRepository = new CertiPostRepository();
+    const postRepository = new PostRepository(db.sequelize, commentRepository, certiPostRepository);
+    const transactionService = new TransactionService(postRepository);
+    interval(MillisecondsToHourOffset / 600).subscribe((hour) => {
       const now = new Date().getHours();
-      const time = (hour + 1) % 24;
-      console.log(time, now);
+      transactionService.checkCertification(now);
+      console.log(now);
     });
 
     const router = createRootRouter(db.sequelize);

@@ -1,4 +1,5 @@
-import { PostStatus } from './../types/index';
+import { MillisecondsToDateOffset } from "./../utils/Constants";
+import { PostStatus } from "./../types/index";
 import { Op, Sequelize } from "sequelize";
 import Comment from "../models/comment.model";
 import Post from "../models/post.model";
@@ -77,7 +78,18 @@ export default class PostRepository {
   }
 
   public async getCheckablePosts(certificationTime: number) {
-    const checkablePosts = await Post.findAll({where: {status: PostStatus.IN_PROGRESS, certificationTime, deletedAt: null}, attributes: {exclude: ["deletedAt"]}});
-    return checkablePosts;
+    const checkablePosts = await Post.findAll({
+      where: { status: PostStatus.IN_PROGRESS, certificationTime, deletedAt: null },
+      attributes: { exclude: ["deletedAt"] },
+    });
+    return checkablePosts.filter((post) => {
+      const nowDate = new Date().setHours(0, 0, 0, 0);
+      const postStartDate = new Date(post.certificationStartDate).setHours(0, 0, 0, 0);
+      const termFromStartDate = (nowDate - postStartDate) / MillisecondsToDateOffset;
+      if (termFromStartDate % post.certificationCycle === 0) {
+        return true;
+      }
+      return false;
+    });
   }
 }

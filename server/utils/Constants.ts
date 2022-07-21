@@ -12,3 +12,4 @@ export const TransactionJobName = Object.freeze({
 });
 
 export const MillisecondsToHourOffset = 60 * 60 * 1000;
+export const MillisecondsToDateOffset = 24 * 60 * 60 * 1000;
