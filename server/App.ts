@@ -1,5 +1,5 @@
 import fs from "fs";
-import { HttpStatus } from "./utils/Constants";
+import { HttpStatus, MillisecondsToHourOffset } from "./utils/Constants";
 import cookieParser from "cookie-parser";
 import express, { Express, NextFunction, Request, Response } from "express";
 import cors from "cors";
@@ -34,7 +34,11 @@ export default class App {
 
     app.use("/v1/api-docs", serve, setup(swaggerDocument));
 
-    interval(3600000).subscribe(console.log);
+    interval(MillisecondsToHourOffset / 6000).subscribe((hour) => {
+      const now = new Date().getHours();
+      const time = (hour + 1) % 24;
+      console.log(time, now);
+    });
 
     const router = createRootRouter(db.sequelize);
     app.use("/", router);

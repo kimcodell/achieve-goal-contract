@@ -6,9 +6,9 @@ export const HttpStatus = Object.freeze({
 });
 
 export const TransactionJobName = Object.freeze({
-  DISTRIBUTE_TOKEN: "인증 실패 - 토큰 분배",
+  DISTRIBUTE_TOKEN: "목표 달성 실패 - 토큰 분배",
   EXCHANGE_TOKEN_TO_MONEY: "환전 - 토큰 환전",
   EXCAHNGE_MONEY_TO_TOKEN: "환전 - 토큰 구매",
 });
 
-export const DayToMillisecondsOffset = 24 * 60 * 60 * 1000;
+export const MillisecondsToHourOffset = 60 * 60 * 1000;
