@@ -10,6 +10,7 @@ import errorHandler from "./middlewares/errorHandler";
 import NotFoundErrorHandler from "./middlewares/notFoundErrorHandler";
 import db from "./models";
 import { cryptoHelper } from "./utils/CryptoHelper";
+import { interval } from "rxjs";
 
 const swaggerDocument = load(fs.readFileSync("./swagger/swagger.yaml", "utf8"));
 
@@ -32,6 +33,8 @@ export default class App {
     this._setCryptoHelper();
 
     app.use("/v1/api-docs", serve, setup(swaggerDocument));
+
+    interval(3600000).subscribe(console.log);
 
     const router = createRootRouter(db.sequelize);
     app.use("/", router);

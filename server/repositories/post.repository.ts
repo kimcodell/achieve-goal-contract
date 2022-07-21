@@ -1,3 +1,4 @@
+import { PostStatus } from './../types/index';
 import { Op, Sequelize } from "sequelize";
 import Comment from "../models/comment.model";
 import Post from "../models/post.model";
@@ -73,5 +74,10 @@ export default class PostRepository {
       include: [{ model: User, attributes: [] }],
     });
     return posts;
+  }
+
+  public async getCheckablePosts(certificationTime: number) {
+    const checkablePosts = await Post.findAll({where: {status: PostStatus.IN_PROGRESS, certificationTime, deletedAt: null}, attributes: {exclude: ["deletedAt"]}});
+    return checkablePosts;
   }
 }
