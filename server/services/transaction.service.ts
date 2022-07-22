@@ -8,44 +8,54 @@ export default class TransactionService {
 
   public async checkCertification(certificationTime: number) {
     const checkablePosts = await this.postRepository.getCheckablePosts(certificationTime);
-    console.log("checkablePosts", checkablePosts);
     if (checkablePosts.length === 0) {
       return;
+    }
+    const result = {
+      success: [] as Post[],
+      fail: [] as Post[],
     }
     for (const post of checkablePosts) {
       if (await this._checkPostIsCertified(post)) {
         if (await this._checkCertiPostIsLast(post)) {
-          console.log("성공");
-          // post.update({ status: PostStatus.SUCCESS });
+          console.log("postId :", post.id, "목표 달성 성공");
+          // await post.update({ status: PostStatus.SUCCESS }); //TODO 주석 해제
+          result.success.push(post);
+          
         } else {
-          console.log("아무것도 아님");
+          console.log("postId :", post.id, "인증 성공!");
         }
       } else {
-        console.log("실패");
-        await post.update({ status: PostStatus.FAIL });
+        console.log("postId :", post.id, "인증 실패. 목표 달성 실패");
+        // await post.update({ status: PostStatus.FAIL });  //TODO 주석 해제
+        result.fail.push(post);
       }
     }
+    return result;
   }
 
-  public async rewardAchievement() {}
+  //TODO 구현
+  public async rewardAchievement(successPostData: Post[]) {}
 
-  public async distributeToken() {}
+  //TODO 구현
+  public async distributeToken(failPostData: Post[]) {}
 
   private async _checkPostIsCertified(post: Post) {
-    const certiPost = await CertiPost.findOne({ where: { postId: post.id }, order: ["id", "desc"] });
+    const certiPost = await CertiPost.findOne({ where: { postId: post.id }, order: [["id", "DESC"]] });
     if (!certiPost) {
       return false;
     }
     const certiPostUploadDate = new Date(certiPost.createdAt).setMinutes(0, 0, 0);
     const now = new Date().setMinutes(0, 0, 0);
-    if (certiPostUploadDate === now) {
+    console.log('certiPostUploadDate', certiPostUploadDate, 'now', now);
+    if (certiPostUploadDate <= now) {
       return true;
     }
     return false;
   }
 
   private async _checkCertiPostIsLast(post: Post) {
-    const certiPost = await CertiPost.findOne({ where: { postId: post.id }, order: ["id", "DESC"] });
+    const certiPost = await CertiPost.findOne({ where: { postId: post.id }, order: [["id", "DESC"]] });
     const postEndDate = new Date(post.certificationEndDate).setHours(0, 0, 0, 0);
     const certiPostUploadDate = new Date(certiPost.createdAt).setHours(0, 0, 0, 0);
     console.log(postEndDate, certiPostUploadDate);

@@ -42,10 +42,13 @@ export default class App {
     const certiPostRepository = new CertiPostRepository();
     const postRepository = new PostRepository(db.sequelize, commentRepository, certiPostRepository);
     const transactionService = new TransactionService(postRepository);
-    interval(MillisecondsToHourOffset / 600).subscribe((hour) => {
+    interval(MillisecondsToHourOffset / 600).subscribe(async () => {  //TODO / 600 제거
       const now = new Date().getHours();
-      transactionService.checkCertification(now);
-      console.log(now);
+      console.log('현재 시간', now);
+      const result = await transactionService.checkCertification(now);
+      console.log('next - result :', JSON.stringify(result)); //TODO 제거
+      await transactionService.rewardAchievement(result.success);
+      await transactionService.distributeToken(result.fail);
     });
 
     const router = createRootRouter(db.sequelize);
