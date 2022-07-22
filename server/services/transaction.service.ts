@@ -11,9 +11,9 @@ export default class TransactionService {
     if (checkablePosts.length === 0) {
       return;
     }
-    const result = {
-      success: [] as Post[],
-      fail: [] as Post[],
+    const result: {success: Post[], fail: Post[]} = {
+      success: [],
+      fail: [],
     }
     for (const post of checkablePosts) {
       if (await this._checkPostIsCertified(post)) {
