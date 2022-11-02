@@ -1,44 +1,24 @@
-import Head from "next/head";
 import CommonLayout from "@components/layouts/CommonLayout";
-import styles from "@styles/Home.module.css";
 import { NextPageWithLayout } from "./_app";
 import PostComponent from "@components/post/PostComponent";
 import styled from "@emotion/styled";
+import { PostSimpleDto } from "@_types/PostDto";
+import { getAllPosts } from "@apis/postApi";
 
-interface Props {
+interface HomeProps {
+  data: PostSimpleDto[];
 }
 
-const data = [
-  {
-    postId: 1,
-    userId: 1,
-    title: "제목1",
-    distributionTokenAmount: "100000",
-    status: 1,
-    createdAt: "2022-07-15T06:45:09.000Z",
-    nickname: "유저1",
-  },
-  {
-    postId: 2,
-    userId: 1,
-    title: "제목2",
-    distributionTokenAmount: "100000",
-    status: 1,
-    createdAt: "2022-07-16T06:45:09.000Z",
-    nickname: "유저1",
-  },
-  {
-    postId: 3,
-    userId: 2,
-    title: "제목3",
-    distributionTokenAmount: "300000",
-    status: 1,
-    createdAt: "2022-07-16T16:45:09.000Z",
-    nickname: "유저2",
-  },
-]
+export async function getServerSideProps() {
+  const data = await getAllPosts();
+  return {
+    props: {
+      data,
+    },
+  };
+}
 
-const Home: NextPageWithLayout<Props> = ({}: Props) => {
+const Home: NextPageWithLayout<HomeProps> = ({data = []}: HomeProps) => {
   return (
     <>
       <h1>게시글 목록</h1>
@@ -65,16 +45,7 @@ export default Home;
 
 Home.getLayout = (page) => <CommonLayout title="목표 달성 서비스 with Blockchain | 홈" description="">{page}</CommonLayout>
 
-
 const Th = styled.th`
   color: #202020;
   font-size: 16px;
 `
-// export async function getServerSideProps() {
-//   const { results } = await (await fetch("/api/movies")).json();
-//   return {
-//     props: {
-//       results,
-//     },
-//   };
-// }
