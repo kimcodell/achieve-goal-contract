@@ -23,40 +23,17 @@ export interface PostDto {
   certificationTime: number;
   status: PostStatus;
   createdAt: string;
-  comments: [
-    {
-      id: number;
-      userId: number;
-      comment: string;
-      createdAt: string;
-      nickname: string;
-    },
-    {
-      id: number;
-      userId: number;
-      comment: string;
-      createdAt: string;
-      nickname: string;
-    },
-  ];
-  certiPosts: [
-    {
-      id: number;
-      comment: string;
-      imageUrl: string;
-      createdAt: string;
-    },
-    {
-      id: number;
-      comment: string;
-      imageUrl: string;
-      createdAt: string;
-    },
-    {
-      id: number;
-      comment: string;
-      imageUrl: string;
-      createdAt: string;
-    },
-  ];
+  comments: {
+    id: number;
+    userId: number;
+    comment: string;
+    createdAt: string;
+    nickname: string;
+  }[];
+  certiPosts: {
+    id: number;
+    comment: string;
+    imageUrl: string;
+    createdAt: string;
+  }[];
 }

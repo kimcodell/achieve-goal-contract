@@ -14,6 +14,7 @@ interface PostProps {}
 
 const Post: NextPageWithLayout<PostProps> = ({}: PostProps) => {
   const [data, setData] = useState<PostDto | null>(null);
+  const [openCertiPost, setOpenCertiPost] = useState<boolean>(true);
 
   const router = useRouter();
 
@@ -35,6 +36,8 @@ const Post: NextPageWithLayout<PostProps> = ({}: PostProps) => {
     () => ({
       createdAt: formatDate(data?.createdAt || ''),
       distributionTokenAmount: formatMoney(data?.distributionTokenAmount || ''),
+      certificationStartDate: formatDate(data?.certificationStartDate || '', 'YYYY-MM-DD'),
+      certificationEndDate: formatDate(data?.certificationEndDate || '', 'YYYY-MM-DD'),
     }),
     [data],
   );
@@ -44,16 +47,39 @@ const Post: NextPageWithLayout<PostProps> = ({}: PostProps) => {
     <>
       <div>
         <Title>{data.title}</Title>
-        <div style={{ display: 'flex', columnGap: '10px', alignItems: 'center', justifyContent: 'center' }}>
+        <SubSectionContainer style={{ margin: '20px 0' }}>
           <TinyText style={{}}>{data.nickname}</TinyText>
           <span style={{ backgroundColor: AppColor.text.sub, opacity: 0.3, width: '1px', height: '10px' }} />
           <TinyText>{formattedData.distributionTokenAmount} TOKEN</TinyText>
           <span style={{ backgroundColor: AppColor.text.sub, opacity: 0.3, width: '1px', height: '10px' }} />
           <TinyText>{formattedData.createdAt}</TinyText>
-        </div>
+        </SubSectionContainer>
+        <SubSectionContainer>
+          <TinyText>
+            {formattedData.certificationStartDate} ~ {formattedData.certificationEndDate}
+          </TinyText>
+          <span style={{ backgroundColor: AppColor.text.sub, opacity: 0.3, width: '1px', height: '10px' }} />
+          <TinyText>{data.certificationCycle}일 마다</TinyText>
+          <span style={{ backgroundColor: AppColor.text.sub, opacity: 0.3, width: '1px', height: '10px' }} />
+          <TinyText>{data.certificationTime}시 인증</TinyText>
+        </SubSectionContainer>
       </div>
 
       <ContentContainer>{data.content}</ContentContainer>
+
+      {/* {data.certiPosts.length > 0 && ( */}
+      {true && (
+        <div>
+          <div style={{ display: 'flex', columnGap: '10px' }}>
+            <h2>인증 내역</h2>
+            <CertiPostOpenButton style={{ fontSize: openCertiPost ? '18px' : '20px' }} onClick={() => setOpenCertiPost(prev => !prev)}>
+              {openCertiPost ? '✕' : '▾'}
+            </CertiPostOpenButton>
+          </div>
+        </div>
+      )}
+
+      <div></div>
     </>
   );
 };
@@ -74,15 +100,31 @@ const Title = styled.h1`
   font-weight: 600;
 `;
 
+const SubSectionContainer = styled.div`
+  display: flex;
+  column-gap: 10px;
+  align-items: center;
+  justify-content: center;
+`;
+
 const TinyText = styled.p`
   font-size: 13px;
   color: ${AppColor.text.sub};
   font-weight: 300;
+  margin: 0;
 `;
 
 const ContentContainer = styled.div`
-  margin-top: 30px;
-  padding: 10px;
+  margin: 30px 0 20px;
+  padding: 16px;
   font-size: 16px;
   color: ${AppColor.text.main};
+  min-height: 600px;
+  border-radius: 6px;
+  border: solid 1px ${AppColor.border.gray};
+`;
+
+const CertiPostOpenButton = styled.button`
+  border: none;
+  background-color: transparent;
 `;
