@@ -4,6 +4,7 @@ import PostComponent from '@components/post/PostComponent';
 import styled from '@emotion/styled';
 import { PostSimpleDto } from '@_types/PostDto';
 import { getAllPosts } from '@apis/postApi';
+import AppColor from '@styles/AppColor';
 
 interface HomeProps {
   data: PostSimpleDto[];
@@ -50,6 +51,6 @@ Home.getLayout = page => (
 );
 
 const Th = styled.th`
-  color: #202020;
+  color: ${AppColor.text.main};
   font-size: 16px;
 `;

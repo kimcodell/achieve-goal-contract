@@ -1,6 +1,8 @@
 import { getPostById } from '@apis/postApi';
 import Loading from '@components/common/Loading';
 import CommonLayout from '@components/layouts/CommonLayout';
+import styled from '@emotion/styled';
+import AppColor from '@styles/AppColor';
 import { formatDate, formatMoney } from '@utils/Utils';
 import { PostDto } from '@_types/PostDto';
 import { useRouter } from 'next/router';
@@ -40,16 +42,18 @@ const Post: NextPageWithLayout<PostProps> = ({}: PostProps) => {
   if (!data) return <Loading />;
   return (
     <>
-      <>
-        <h1>{data.title}</h1>
-        <div style={{ display: 'flex', columnGap: '10px' }}>
-          <p>
-            {data.nickname}
-            <span style={{ backgroundColor: '#ebebeb', width: '1px', height: '9px' }} />
-            {formattedData.createdAt}
-          </p>
+      <div>
+        <Title>{data.title}</Title>
+        <div style={{ display: 'flex', columnGap: '10px', alignItems: 'center', justifyContent: 'center' }}>
+          <TinyText style={{}}>{data.nickname}</TinyText>
+          <span style={{ backgroundColor: AppColor.text.sub, opacity: 0.3, width: '1px', height: '10px' }} />
+          <TinyText>{formattedData.distributionTokenAmount} TOKEN</TinyText>
+          <span style={{ backgroundColor: AppColor.text.sub, opacity: 0.3, width: '1px', height: '10px' }} />
+          <TinyText>{formattedData.createdAt}</TinyText>
         </div>
-      </>
+      </div>
+
+      <ContentContainer>{data.content}</ContentContainer>
     </>
   );
 };
@@ -61,3 +65,24 @@ Post.getLayout = page => (
     {page}
   </CommonLayout>
 );
+
+const Title = styled.h1`
+  text-align: center;
+  fontsize: 20px;
+  margin: 40px 0 4px;
+  color: ${AppColor.text.main};
+  font-weight: 600;
+`;
+
+const TinyText = styled.p`
+  font-size: 13px;
+  color: ${AppColor.text.sub};
+  font-weight: 300;
+`;
+
+const ContentContainer = styled.div`
+  margin-top: 30px;
+  padding: 10px;
+  font-size: 16px;
+  color: ${AppColor.text.main};
+`;

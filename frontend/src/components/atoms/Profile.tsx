@@ -1,4 +1,5 @@
 import styled from '@emotion/styled';
+import AppColor from '@styles/AppColor';
 import Image from 'next/image';
 
 interface ProfileProps {
@@ -17,8 +18,8 @@ export default function Profile({ profileImgUrl, width, height }: ProfileProps) 
 
 const Container = styled.div`
   border-radius: 1000px;
-  background-color: #f5f5f5;
-  border: 1px solid #c4c4c4;
+  background-color: ${AppColor.background.whitegray};
+  border: 1px solid ${AppColor.border.gray};
   width: 40px;
   height: 40px;
 `;
