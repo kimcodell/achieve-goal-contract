@@ -16,7 +16,7 @@ export default class PostRepository {
       include: [{ model: User, attributes: [] }],
       attributes: [["id", "postId"], "userId", "title", "distributionTokenAmount", "status", "createdAt", "User.nickname"],
       raw: true,
-      order: [['createdAt', 'DESC']]
+      order: [["createdAt", "DESC"]],
     });
     return posts;
   }

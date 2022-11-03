@@ -1,5 +1,5 @@
-import styled from "@emotion/styled";
-import Image from "next/image";
+import styled from '@emotion/styled';
+import Image from 'next/image';
 
 interface ProfileProps {
   profileImgUrl?: string;
@@ -7,18 +7,18 @@ interface ProfileProps {
   height?: string | number;
 }
 
-export default function Profile({profileImgUrl, width, height}: ProfileProps) {
+export default function Profile({ profileImgUrl, width, height }: ProfileProps) {
   return (
-    <Container style={{...(width ? { width } : null), ...(height ? { height } : null)}}>
+    <Container style={{ ...(width ? { width } : null), ...(height ? { height } : null) }}>
       {/* <Image src={profileImgUrl || ''}  /> */}
     </Container>
-  )
+  );
 }
 
 const Container = styled.div`
   border-radius: 1000px;
-  background-color: #F5F5F5;
-  border: 1px solid #C4C4C4;
+  background-color: #f5f5f5;
+  border: 1px solid #c4c4c4;
   width: 40px;
   height: 40px;
-`
+`;

@@ -6,8 +6,16 @@ interface ButtonShortProps {
   buttonStyle?: CSSProperties;
 }
 
-export default function ButtonShort({label, buttonStyle, ...props} : ButtonShortProps & DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>) {
-  return <Button style={buttonStyle} {...props}>{label}</Button>
+export default function ButtonShort({
+  label,
+  buttonStyle,
+  ...props
+}: ButtonShortProps & DetailedHTMLProps<ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>) {
+  return (
+    <Button style={buttonStyle} {...props}>
+      {label}
+    </Button>
+  );
 }
 
 const Button = styled.button`
@@ -22,4 +30,4 @@ const Button = styled.button`
     background-color: rgba(0, 0, 0, 0.12);
     color: rgba(0, 0, 0, 0.26);
   }
-`
+`;

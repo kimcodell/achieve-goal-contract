@@ -1,11 +1,7 @@
-import styled from "@emotion/styled";
+import styled from '@emotion/styled';
 
 export default function Loading() {
-  return (
-    <LoadingContainer>
-      로딩 중...
-    </LoadingContainer>
-  );
+  return <LoadingContainer>로딩 중...</LoadingContainer>;
 }
 
 const LoadingContainer = styled.div`
@@ -13,4 +9,4 @@ const LoadingContainer = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-`
+`;
