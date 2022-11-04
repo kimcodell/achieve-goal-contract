@@ -1,9 +1,10 @@
-import CommonLayout from "@components/layouts/CommonLayout";
-import { NextPageWithLayout } from "./_app";
-import PostComponent from "@components/post/PostComponent";
-import styled from "@emotion/styled";
-import { PostSimpleDto } from "@_types/PostDto";
-import { getAllPosts } from "@apis/postApi";
+import CommonLayout from '@components/layouts/CommonLayout';
+import { NextPageWithLayout } from './_app';
+import PostComponent from '@components/post/PostComponent';
+import styled from '@emotion/styled';
+import { PostSimpleDto } from '@_types/PostDto';
+import { getAllPosts } from '@apis/postApi';
+import AppColor from '@styles/AppColor';
 
 interface HomeProps {
   data: PostSimpleDto[];
@@ -18,13 +19,13 @@ export async function getServerSideProps() {
   };
 }
 
-const Home: NextPageWithLayout<HomeProps> = ({data = []}: HomeProps) => {
+const Home: NextPageWithLayout<HomeProps> = ({ data = [] }: HomeProps) => {
   return (
     <>
       <h1>게시글 목록</h1>
-      <table style={{width: '100%', borderCollapse: 'collapse'}}>
+      <table style={{ width: '100%', borderCollapse: 'collapse' }}>
         <thead>
-          <tr style={{margin: '10px 0'}}>
+          <tr style={{ margin: '10px 0' }}>
             <Th>제목</Th>
             <Th>작성자</Th>
             <Th>배당 토큰 수량</Th>
@@ -32,7 +33,7 @@ const Home: NextPageWithLayout<HomeProps> = ({data = []}: HomeProps) => {
           </tr>
         </thead>
         <tbody>
-          {data.map((post) => (
+          {data.map(post => (
             <PostComponent key={post.postId} data={post} />
           ))}
         </tbody>
@@ -43,9 +44,13 @@ const Home: NextPageWithLayout<HomeProps> = ({data = []}: HomeProps) => {
 
 export default Home;
 
-Home.getLayout = (page) => <CommonLayout title="목표 달성 서비스 with Blockchain | 홈" description="">{page}</CommonLayout>
+Home.getLayout = page => (
+  <CommonLayout title='목표 달성 서비스 with Blockchain | 홈' description=''>
+    {page}
+  </CommonLayout>
+);
 
 const Th = styled.th`
-  color: #202020;
+  color: ${AppColor.text.main};
   font-size: 16px;
-`
+`;

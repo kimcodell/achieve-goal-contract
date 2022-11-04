@@ -1,10 +1,10 @@
-import { NextPage } from "next";
-import { AppProps } from "next/app";
-import { ReactElement, ReactNode } from "react";
-import wrapper from "@store/configStore";
-import '@styles/globals.css'
+import { NextPage } from 'next';
+import { AppProps } from 'next/app';
+import { ReactElement, ReactNode } from 'react';
+import wrapper from '@store/configStore';
+import '@styles/globals.css';
 import 'react-toastify/dist/ReactToastify.css';
-import { ToastContainer } from "react-toastify";
+import { ToastContainer } from 'react-toastify';
 
 //참고: https://nextjs.org/docs/basic-features/layouts#with-typescript
 export type NextPageWithLayout<T> = NextPage<T> & {
@@ -16,7 +16,7 @@ interface MyAppProps extends AppProps {
 }
 
 function App({ Component, pageProps }: MyAppProps) {
-  const getLayout = Component.getLayout ?? ((page) => page);
+  const getLayout = Component.getLayout ?? (page => page);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import { PostStatus } from "./types";
+import { PostStatus } from './types';
 
 export interface PostSimpleDto {
   postId: number;
@@ -21,42 +21,19 @@ export interface PostDto {
   certificationEndDate: string;
   certificationCycle: number;
   certificationTime: number;
-  status: PostStatus,
+  status: PostStatus;
   createdAt: string;
-  comments: [
-      {
-          id: number;
-          userId: number;
-          comment: string;
-          createdAt: string;
-          nickname: string;
-      },
-      {
-          id: number;
-          userId: number;
-          comment: string;
-          createdAt: string;
-          nickname: string;
-      }
-  ],
-  certiPosts: [
-      {
-          id: number;
-          comment: string;
-          imageUrl: string;
-          createdAt: string;
-      },
-      {
-          id: number;
-          comment: string;
-          imageUrl: string;
-          createdAt: string;
-      },
-      {
-          id: number;
-          comment: string;
-          imageUrl: string;
-          createdAt: string;
-      }
-  ]
+  comments: {
+    id: number;
+    userId: number;
+    comment: string;
+    createdAt: string;
+    nickname: string;
+  }[];
+  certiPosts: {
+    id: number;
+    comment: string;
+    imageUrl: string;
+    createdAt: string;
+  }[];
 }

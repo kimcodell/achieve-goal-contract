@@ -16,8 +16,8 @@ if (process.env.NEXT_PUBLIC_BASE_URL) {
 }
 
 axiosInstance.interceptors.response.use(
-  (response) => response,
-  (error) => {
+  response => response,
+  error => {
     if (error.response.data?.error && error.response.data.error.message) {
       //5초 동안 오는 응답에 대해서 동일한 응답이면 하나만 표시한다.
       toast.error(`${error.response.data.error.message}`, {
