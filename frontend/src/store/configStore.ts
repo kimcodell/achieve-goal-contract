@@ -1,6 +1,6 @@
-import { CombinedState, configureStore, Reducer } from "@reduxjs/toolkit";
-import { Context, createWrapper } from "next-redux-wrapper";
-import rootReducer, { RootStates } from "./reducer";
+import { CombinedState, configureStore, Reducer } from '@reduxjs/toolkit';
+import { Context, createWrapper } from 'next-redux-wrapper';
+import rootReducer, { RootStates } from './reducer';
 
 const store = configureStore({
   reducer: rootReducer as Reducer<CombinedState<RootStates>>,
@@ -8,7 +8,6 @@ const store = configureStore({
 });
 
 const makeStore = (context: Context) => {
-  console.log('<Configure Store> context:', context);
   return store;
 };
 

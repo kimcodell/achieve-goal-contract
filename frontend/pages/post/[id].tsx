@@ -1,6 +1,7 @@
 import { getPostById } from '@apis/postApi';
 import Loading from '@components/common/Loading';
 import CommonLayout from '@components/layouts/CommonLayout';
+import CertiPostComponent from '@components/post/CertiPostComponent';
 import styled from '@emotion/styled';
 import AppColor from '@styles/AppColor';
 import { formatDate, formatMoney } from '@utils/Utils';
@@ -67,8 +68,7 @@ const Post: NextPageWithLayout<PostProps> = ({}: PostProps) => {
 
       <ContentContainer>{data.content}</ContentContainer>
 
-      {/* {data.certiPosts.length > 0 && ( */}
-      {true && (
+      {data.certiPosts.length > 0 && (
         <div>
           <div style={{ display: 'flex', columnGap: '10px' }}>
             <h2>인증 내역</h2>
@@ -76,6 +76,9 @@ const Post: NextPageWithLayout<PostProps> = ({}: PostProps) => {
               {openCertiPost ? '✕' : '▾'}
             </CertiPostOpenButton>
           </div>
+          {data.certiPosts.map(certi => (
+            <CertiPostComponent key={certi.id} data={certi} />
+          ))}
         </div>
       )}
 

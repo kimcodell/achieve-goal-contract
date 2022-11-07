@@ -22,12 +22,26 @@ class RouteHandler {
       next(error);
     }
   }
+
+  public async getAllCertiPosts(req: Request, res: Response, next: NextFunction, data: any) {
+    try {
+      const { error, value } = Joi.object({
+        postId: Joi.number().required(),
+      }).validate(req.params);
+      if (error) throw error;
+      const certiPosts = await this.certiPostService.getAllCertiPosts({ ...value });
+      successResponse(res, certiPosts);
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 function certiPostRouter(...params: [CertiPostService]) {
   const router = Router();
   const handler = new RouteHandler(...params);
 
+  router.get("/:postId", wrap(handler.getAllCertiPosts.bind(handler)));
   router.post("/", wrap(handler.create.bind(handler)));
 
   return router;

@@ -26,7 +26,7 @@ const createRootRouter = (sequelize: Sequelize) => {
   const userService = new UserService(postRepository);
   const postService = new PostService(postRepository, userRepository);
   const commentService = new CommentService();
-  const certiPostService = new CertiPostService();
+  const certiPostService = new CertiPostService(certiPostRepository);
 
   const router = Router();
 
@@ -38,7 +38,7 @@ const createRootRouter = (sequelize: Sequelize) => {
   router.use("/v1/user", userRouter(userService));
   router.use("/v1/post", postRouter(postService));
   router.use("/v1/comment", commentRouter(commentService));
-  router.use("v1/certi", certiPostRouter(certiPostService));
+  router.use("/v1/certi", certiPostRouter(certiPostService));
   router.use("/v1/transaction", transactionRouter());
 
   return router;
