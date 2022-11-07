@@ -17,7 +17,7 @@ export default function CommonLayout({ children, title, description }: CommonLay
         <title>{title}</title>
         <meta name='description' content={description}></meta>
       </Head>
-      <main>
+      <main style={{ marginBottom: '32px' }}>
         <Header>
           <HeaderContainer>
             <div style={{ width: '120px', height: '32px', backgroundColor: 'skyblue' }} />

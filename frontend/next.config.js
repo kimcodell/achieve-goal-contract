@@ -1,8 +1,11 @@
 /** @type {import('next').NextConfig} */
-const API_KEY = "1111";
+const API_KEY = '1111';
 
 const nextConfig = {
   reactStrictMode: true,
+  images: {
+    domains: ['t1.daumcdn.net'],
+  },
   // async redirects() {
   //   return [
   //     {
