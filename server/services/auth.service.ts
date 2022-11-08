@@ -11,8 +11,8 @@ export default class AuthService {
     await this.checkNicknameDuplication(nickname);
     await this.checkEmailDuplication(email);
 
-    const passwordHash = password ? cryptoHelper.bcryptHash(password) : "";
-
+    console.log("asdasdjdlkajsldkjlaskdalskdla");
+    const passwordHash = cryptoHelper.bcryptHash(password);
     const newUser = await this.userRepository.createUser({
       name,
       nickname,
@@ -41,14 +41,14 @@ export default class AuthService {
   }
 
   public async checkNicknameDuplication(nickname: string) {
-    const hasNickname = this.userRepository.findUserByNickname(nickname);
+    const hasNickname = await this.userRepository.findUserByNickname(nickname);
     if (!!hasNickname) {
       throw new ErrorWithCode("DUPLICATED NICKNAME", "이미 사용 중인 닉네임입니다.");
     }
   }
 
   public async checkEmailDuplication(email: string) {
-    const hasEmail = this.userRepository.findUserByEmail(email);
+    const hasEmail = await this.userRepository.findUserByEmail(email);
     if (!!hasEmail) {
       throw new ErrorWithCode("DUPLICATED EMAIL", "이미 사용 중인 이메일입니다.");
     }

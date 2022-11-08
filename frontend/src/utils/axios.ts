@@ -19,6 +19,9 @@ axiosInstance.interceptors.response.use(
   response => response,
   error => {
     if (error.response.data?.error && error.response.data.error.message) {
+      if (error.response.data.error.message.includes('jwt 토큰이 없습니다')) {
+        return;
+      }
       //5초 동안 오는 응답에 대해서 동일한 응답이면 하나만 표시한다.
       toast.error(`${error.response.data.error.message}`, {
         toastId: `${error.response.data.error.message}${Math.ceil(new Date().getTime() / 2000)}`,

@@ -20,13 +20,12 @@ export default function CertiPostComponent({ data }: CertiPostComponentProps) {
       <div
         style={{
           display: 'block',
-          border: '1px solid black',
-          width: '50%',
-          maxHeight: '100%',
+          width: '36%',
+          height: '100%',
         }}>
-        <Image src={data.imageUrl} width='40px' height='40px' layout='responsive' alt='인증 게시물 이미지' />
+        <Image src={data.imageUrl} width='40px' height='40px' layout='responsive' objectFit='contain' alt='인증 게시물 이미지' />
       </div>
-      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between', padding: '10px 20px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', flex: 1, justifyContent: 'space-between', padding: '40px 20px' }}>
         <Text>{data.comment}</Text>
         <Text style={{ justifySelf: 'flex-end', color: AppColor.text.sub, fontSize: '12px' }}>{createdAt}</Text>
       </div>
@@ -40,6 +39,7 @@ const Container = styled.div`
   border-radius: 8px;
   overflow: hidden;
   display: flex;
+  margin-bottom: 20px;
 `;
 
 const Text = styled.p``;

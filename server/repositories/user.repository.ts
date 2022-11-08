@@ -19,6 +19,9 @@ export default class UserRepository {
 
   public async findUserByEmail(email: string, includePasswordHash: boolean = false) {
     const user = await User.findOne({ where: { email, deletedAt: null }, attributes: { exclude: ["updatedAt", "deletedAt"] } });
+    if (!user) {
+      return user;
+    }
     if (!includePasswordHash) {
       delete user.passwordHash;
     }

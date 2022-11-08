@@ -1,9 +1,9 @@
 -- user 데이터
-INSERT INTO `achieve-goal-contract`.`user` (`name`, `email`, `passwordHash`, `nickname`, `registerType`, `walletAddress`) VALUES ('홍길동', 'test1@naver.com', '11111111', '유저1', '1', '0x4842923020fB0732F395C99bE5F49831199BB03C');
-INSERT INTO `achieve-goal-contract`.`user` (`name`, `email`, `nickname`, `registerType`) VALUES ('김철수', 'test2@naver.com', '유저2', '2');
-INSERT INTO `achieve-goal-contract`.`user` (`name`, `email`, `passwordHash`, `nickname`, `registerType`) VALUES ('홍길순', 'test3@naver.com', '11111111', '유저3', '1');
-INSERT INTO `achieve-goal-contract`.`user` (`name`, `email`, `nickname`, `registerType`) VALUES ('박서현', 'test4@naver.com', '유저4', '2');
-INSERT INTO `achieve-goal-contract`.`user` (`name`, `email`, `passwordHash`, `nickname`, `registerType`) VALUES ('정혜인', 'test5@naver.com', '11111111', '유저5', '1');
+INSERT INTO `achieve-goal-contract`.`user` (`name`, `email`, `passwordHash`, `nickname`, `registerType`, `walletAddress`) VALUES ('홍길동', 'test1@naver.com', '$2a$10$S9RK23qhPsIjDI38RmCcduEFsnwT7eNwLOmRCZWskEYo59UGY2PG2', '유저1', '1', '0x4842923020fB0732F395C99bE5F49831199BB03C');
+INSERT INTO `achieve-goal-contract`.`user` (`name`, `email`, `passwordHash`, `nickname`, `registerType`) VALUES ('김철수', 'test2@naver.com', '$2a$10$S9RK23qhPsIjDI38RmCcduEFsnwT7eNwLOmRCZWskEYo59UGY2PG2', '유저2', '1');
+INSERT INTO `achieve-goal-contract`.`user` (`name`, `email`, `passwordHash`, `nickname`, `registerType`) VALUES ('홍길순', 'test3@naver.com', '$2a$10$S9RK23qhPsIjDI38RmCcduEFsnwT7eNwLOmRCZWskEYo59UGY2PG2', '유저3', '1');
+INSERT INTO `achieve-goal-contract`.`user` (`name`, `email`, `passwordHash`, `nickname`, `registerType`) VALUES ('김민혁', 'test4@naver.com', '$2a$10$S9RK23qhPsIjDI38RmCcduEFsnwT7eNwLOmRCZWskEYo59UGY2PG2', '유저4', '1');
+INSERT INTO `achieve-goal-contract`.`user` (`name`, `email`, `passwordHash`, `nickname`, `registerType`) VALUES ('이순희', 'test5@naver.com', '$2a$10$S9RK23qhPsIjDI38RmCcduEFsnwT7eNwLOmRCZWskEYo59UGY2PG2', '유저5', '1');
 
 -- post 데이터
 INSERT INTO `achieve-goal-contract`.`post` (`userId`, `title`, `content`, `distributionTokenAmount`, `certificationStartDate`, `certificationEndDate`, `certificationCycle`, `certificationTime`) VALUES ('1', '제목1', '안녕하세요.', '100000', '2022-07-15', '2022-08-03', '1', '9');

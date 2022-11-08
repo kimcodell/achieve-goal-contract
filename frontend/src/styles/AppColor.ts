@@ -8,6 +8,7 @@ const AppColor = {
   },
   border: {
     gray: '#c4c4c4',
+    black: '#202020',
   },
   background: {
     whitegray: '#f5f5f5',
