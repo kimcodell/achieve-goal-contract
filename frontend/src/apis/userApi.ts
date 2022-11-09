@@ -9,15 +9,24 @@ export const USER_QUERY_KEY = {
 };
 
 export async function getMyInfo(): Promise<UserDto> {
-  const {
-    data: { data },
-  } = await axiosInstance.get(`${prefix}/me`);
-  return data;
+  try {
+    const {
+      data: { data },
+    } = await axiosInstance.get(`${prefix}/me`);
+    return data;
+  } catch (error) {
+    throw error;
+  }
 }
 
 export async function getUserInfo(params: { userId: number }): Promise<UserDto> {
-  const {
-    data: { data },
-  } = await axiosInstance.get(`${prefix}/${params.userId}`);
-  return data;
+  try {
+    const {
+      data: { data },
+    } = await axiosInstance.get(`${prefix}/${params.userId}`);
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }

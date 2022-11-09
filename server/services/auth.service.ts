@@ -42,6 +42,7 @@ export default class AuthService {
 
   public async checkNicknameDuplication(nickname: string) {
     const hasNickname = await this.userRepository.findUserByNickname(nickname);
+    console.log(hasNickname, "asdasdasdasdsadasdasdasdasdasd");
     if (!!hasNickname) {
       throw new ErrorWithCode("DUPLICATED NICKNAME", "이미 사용 중인 닉네임입니다.");
     }

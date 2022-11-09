@@ -54,6 +54,7 @@ class RouteHandler {
     }
   }
 
+  // TODO
   public async update(req: Request, res: Response, next: NextFunction) {
     try {
     } catch (error) {
@@ -63,6 +64,20 @@ class RouteHandler {
 
   public async checkNicknameDuplication(req: Request, res: Response, next: NextFunction) {
     try {
+      const { error, value } = Joi.object({
+        nickname: Joi.string().required(),
+      }).validate(req.body);
+      if (error) throw error;
+      this.authService
+        .checkNicknameDuplication(value.nickname)
+        .then(() => successResponse(res, {}))
+        .catch((error) => {
+          if (error?.code === "DUPLICATED NICKNAME") {
+            successResponse(res, { message: "이미 존재하는 닉네임 입니다." });
+          } else {
+            throw error;
+          }
+        });
     } catch (error) {
       next(error);
     }
@@ -70,6 +85,20 @@ class RouteHandler {
 
   public async checkEmailDuplication(req: Request, res: Response, next: NextFunction) {
     try {
+      const { error, value } = Joi.object({
+        email: Joi.string().email().required(),
+      }).validate(req.body);
+      if (error) throw error;
+      this.authService
+        .checkEmailDuplication(value.email)
+        .then(() => successResponse(res, {}))
+        .catch((error) => {
+          if (error?.code === "DUPLICATED EMAIL") {
+            successResponse(res, { message: "이미 사용 중인 이메일 입니다." });
+          } else {
+            throw error;
+          }
+        });
     } catch (error) {
       next(error);
     }

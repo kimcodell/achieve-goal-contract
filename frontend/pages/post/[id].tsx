@@ -15,22 +15,28 @@ import { useQuery } from '@tanstack/react-query';
 
 interface PostProps {}
 
-const Post: NextPageWithLayout<PostProps> = ({}: PostProps) => {
+const Post: NextPageWithLayout<PostProps> = ({}) => {
   const [openCertiPost, setOpenCertiPost] = useState<boolean>(true);
 
   const router = useRouter();
 
   const postId = useMemo(() => (typeof router.query.id === 'string' ? Number(router.query.id) : undefined), [router]);
 
-  const { data, isLoading } = useQuery([POST_QUERY_KEY.GET_POST_BY_ID, postId], async () => {
-    if (!postId) return;
-    if (postId === 0 || isNaN(postId)) {
-      toast.error('잘못된 요청입니다.');
-      router.push('/');
-      return;
-    }
-    return await getPostById({ postId });
-  });
+  const { data, isLoading } = useQuery(
+    [POST_QUERY_KEY.GET_POST_BY_ID, postId],
+    async () => {
+      if (!postId) return null;
+      if (postId === 0 || isNaN(postId)) {
+        toast.error('잘못된 요청입니다.');
+        router.push('/');
+        return null;
+      }
+      return await getPostById({ postId });
+    },
+    {
+      initialData: null,
+    },
+  );
 
   const formattedData = useMemo(
     () => ({

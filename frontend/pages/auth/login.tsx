@@ -12,7 +12,7 @@ import { useMutation } from '@tanstack/react-query';
 
 interface LoginProps {}
 
-const Login: NextPageWithLayout<LoginProps> = ({}: LoginProps) => {
+const Login: NextPageWithLayout<LoginProps> = ({}) => {
   const router = useRouter();
 
   const { values, errors, touched, handleSubmit, handleChange, handleBlur } = useFormik({

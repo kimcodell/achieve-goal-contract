@@ -1,11 +1,15 @@
 import styled from '@emotion/styled';
 import Head from 'next/head';
-import { ReactElement } from 'react';
+import { ReactElement, useCallback } from 'react';
 import ShortButton from '@components/atoms/ShortButton';
 import Profile from '@components/atoms/Profile';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
 import useMe from '@hooks/useMe';
+import Logo from '@components/common/Logo';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { logout } from '@apis/authApi';
+import { USER_QUERY_KEY } from '@apis/userApi';
 
 interface CommonLayoutProps {
   title?: string;
@@ -18,6 +22,19 @@ export default function CommonLayout({ children, title = '', description }: Comm
 
   const router = useRouter();
 
+  const queryClient = useQueryClient();
+
+  const { mutate: _logout } = useMutation(logout, {
+    onSuccess: () => {
+      queryClient.invalidateQueries([USER_QUERY_KEY.GET_MY_INFO]);
+      router.reload();
+    },
+  });
+
+  const onLogout = useCallback(() => {
+    _logout();
+  }, [_logout]);
+
   return (
     <>
       <Head>
@@ -27,16 +44,21 @@ export default function CommonLayout({ children, title = '', description }: Comm
       <main style={{ marginBottom: '32px' }}>
         <Header>
           <HeaderContainer>
-            <Link href={'/'}>
-              <div style={{ width: '120px', height: '32px', backgroundColor: 'skyblue' }} />
+            <Link href='/' passHref>
+              <a>
+                <Logo />
+              </a>
             </Link>
             <div style={{ display: 'flex', columnGap: '20px', alignItems: 'center' }}>
               {isLoggedIn ? (
                 <>
-                  <Profile />
+                  <Link href='/mypage' passHref>
+                    <a>
+                      <Profile />
+                    </a>
+                  </Link>
                   <p>{me?.nickname} 님</p>
-                  {/* TODO */}
-                  <ShortButton label='로그아웃' onClick={() => {}} />
+                  <ShortButton label='로그아웃' onClick={onLogout} />
                 </>
               ) : (
                 <ShortButton label='로그인' onClick={() => router.push('/auth/login')} />
