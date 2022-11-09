@@ -3,27 +3,44 @@ import Head from 'next/head';
 import { ReactElement } from 'react';
 import ShortButton from '@components/atoms/ShortButton';
 import Profile from '@components/atoms/Profile';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import useMe from '@hooks/useMe';
 
 interface CommonLayoutProps {
-  title: string;
-  description: string;
+  title?: string;
+  description?: string;
   children: ReactElement;
 }
 
-export default function CommonLayout({ children, title, description }: CommonLayoutProps) {
+export default function CommonLayout({ children, title = '', description }: CommonLayoutProps) {
+  const { me, isLoggedIn } = useMe();
+
+  const router = useRouter();
+
   return (
     <>
       <Head>
         <title>{title}</title>
-        <meta name='description' content={description}></meta>
+        {description && <meta name='description' content={description} />}
       </Head>
       <main style={{ marginBottom: '32px' }}>
         <Header>
           <HeaderContainer>
-            <div style={{ width: '120px', height: '32px', backgroundColor: 'skyblue' }} />
+            <Link href={'/'}>
+              <div style={{ width: '120px', height: '32px', backgroundColor: 'skyblue' }} />
+            </Link>
             <div style={{ display: 'flex', columnGap: '20px', alignItems: 'center' }}>
-              <ShortButton label='로그인' />
-              <Profile />
+              {isLoggedIn ? (
+                <>
+                  <Profile />
+                  <p>{me?.nickname} 님</p>
+                  {/* TODO */}
+                  <ShortButton label='로그아웃' onClick={() => {}} />
+                </>
+              ) : (
+                <ShortButton label='로그인' onClick={() => router.push('/auth/login')} />
+              )}
             </div>
           </HeaderContainer>
         </Header>

@@ -1,37 +1,36 @@
-import { getPostById } from '@apis/postApi';
+import { getPostById, POST_QUERY_KEY } from '@apis/postApi';
 import Loading from '@components/common/Loading';
 import CommonLayout from '@components/layouts/CommonLayout';
 import CertiPostComponent from '@components/post/CertiPostComponent';
+import CommentComponent from '@components/post/CommentComponent';
+import CommentInput from '@components/post/CommentInput';
 import styled from '@emotion/styled';
 import AppColor from '@styles/AppColor';
 import { formatDate, formatMoney } from '@utils/Utils';
-import { PostDto } from '@_types/PostDto';
 import { useRouter } from 'next/router';
 import { NextPageWithLayout } from 'pages/_app';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
+import { useQuery } from '@tanstack/react-query';
 
 interface PostProps {}
 
 const Post: NextPageWithLayout<PostProps> = ({}: PostProps) => {
-  const [data, setData] = useState<PostDto | null>(null);
   const [openCertiPost, setOpenCertiPost] = useState<boolean>(true);
 
   const router = useRouter();
 
-  useEffect(() => {
-    (async () => {
-      if (router.query.id === undefined) return;
-      const postId = Number(router.query.id);
-      if (postId === 0 || isNaN(postId)) {
-        toast.error('잘못된 요청입니다.');
-        router.push('/');
-        return;
-      }
-      const data = await getPostById({ postId });
-      setData(data);
-    })();
-  }, [router]);
+  const postId = useMemo(() => (typeof router.query.id === 'string' ? Number(router.query.id) : undefined), [router]);
+
+  const { data, isLoading } = useQuery([POST_QUERY_KEY.GET_POST_BY_ID, postId], async () => {
+    if (!postId) return;
+    if (postId === 0 || isNaN(postId)) {
+      toast.error('잘못된 요청입니다.');
+      router.push('/');
+      return;
+    }
+    return await getPostById({ postId });
+  });
 
   const formattedData = useMemo(
     () => ({
@@ -43,7 +42,7 @@ const Post: NextPageWithLayout<PostProps> = ({}: PostProps) => {
     [data],
   );
 
-  if (!data) return <Loading />;
+  if (isLoading || !data) return <Loading />;
   return (
     <>
       <div>
@@ -69,20 +68,28 @@ const Post: NextPageWithLayout<PostProps> = ({}: PostProps) => {
       <ContentContainer>{data.content}</ContentContainer>
 
       {data.certiPosts.length > 0 && (
-        <div>
+        <div style={{ marginBottom: '30px' }}>
           <div style={{ display: 'flex', columnGap: '10px' }}>
             <h2>인증 내역</h2>
             <CertiPostOpenButton style={{ fontSize: openCertiPost ? '18px' : '20px' }} onClick={() => setOpenCertiPost(prev => !prev)}>
               {openCertiPost ? '✕' : '▾'}
             </CertiPostOpenButton>
           </div>
-          {data.certiPosts.map(certi => (
-            <CertiPostComponent key={certi.id} data={certi} />
-          ))}
+          {openCertiPost && data.certiPosts.map(certi => <CertiPostComponent key={certi.id} data={certi} />)}
         </div>
       )}
 
-      <div></div>
+      <div>
+        {data.comments.length > 0 ? (
+          <CommentHeader>댓글 {data.comments.length} 개</CommentHeader>
+        ) : (
+          <CommentHeader>첫번째 응원 댓글을 남겨주세요!</CommentHeader>
+        )}
+        <CommentInput postId={data.postId} />
+        {data.comments.map(comment => (
+          <CommentComponent key={comment.id} data={comment} />
+        ))}
+      </div>
     </>
   );
 };
@@ -90,7 +97,7 @@ const Post: NextPageWithLayout<PostProps> = ({}: PostProps) => {
 export default Post;
 
 Post.getLayout = page => (
-  <CommonLayout title='목표 달성 서비스 with Blockchain | 상세' description=''>
+  <CommonLayout title='목표 달성 with Blockchain | 상세' description=''>
     {page}
   </CommonLayout>
 );
@@ -130,4 +137,11 @@ const ContentContainer = styled.div`
 const CertiPostOpenButton = styled.button`
   border: none;
   background-color: transparent;
+`;
+
+const CommentHeader = styled.p`
+  font-size: 20px;
+  font-weight: 700;
+  color: ${AppColor.text.main};
+  margin-bottom: 14px;
 `;

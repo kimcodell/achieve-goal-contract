@@ -5,7 +5,7 @@ export interface PostSimpleDto {
   userId: number;
   title: string;
   distributionTokenAmount: string;
-  status: number;
+  status: PostStatus;
   createdAt: string;
   nickname: string;
 }

@@ -11,9 +11,9 @@ class RouteHandler {
       const { error, value } = Joi.object({
         email: Joi.string().email().required(),
         name: Joi.string().required(),
-        password: Joi.string().optional(),
+        password: Joi.string().required(),
         nickname: Joi.string().required(),
-        registerType: Joi.allow([1, 2]).required(),
+        registerType: Joi.number().allow(1, 2).required(),
       }).validate(req.body);
       if (error) throw error;
 
