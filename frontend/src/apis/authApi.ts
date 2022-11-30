@@ -5,7 +5,8 @@ export async function signup(params: { name: string; nickname: string; email: st
   try {
     await axiosInstance.post(`${prefix}/signup`, params);
   } catch (error) {
-    console.log(error);
+    console.error(error);
+    throw error;
   }
 }
 
@@ -19,6 +20,34 @@ export async function login(params: { email: string; password: string }): Promis
     localStorage.setItem('accessToken', jwt);
     axiosInstance.defaults.headers.common.Authorization = `Bearer ${jwt}`;
     return jwt;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+}
+
+export async function logout() {
+  localStorage.removeItem('accessToken');
+  axiosInstance.defaults.headers.common.Authorization = undefined;
+}
+
+export async function checkNickname(params: { nickname: string }): Promise<{ message?: string } | undefined> {
+  try {
+    const {
+      data: { data },
+    } = await axiosInstance.post(`${prefix}/check/nickname`, params);
+    return data;
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+export async function checkEmail(params: { email: string }): Promise<{ message?: string } | undefined> {
+  try {
+    const {
+      data: { data },
+    } = await axiosInstance.post(`${prefix}/check/email`, params);
+    return data;
   } catch (error) {
     console.error(error);
   }

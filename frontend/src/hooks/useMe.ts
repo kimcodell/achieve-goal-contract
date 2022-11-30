@@ -5,14 +5,15 @@ import { useState } from 'react';
 export default function useMe() {
   const [isLoggedIn, setIsLogedIn] = useState(false);
 
-  const { data: me } = useQuery([USER_QUERY_KEY.GET_MY_INFO], getMyInfo, {
+  const { data: me } = useQuery([USER_QUERY_KEY.GET_MY_INFO], () => getMyInfo(), {
     onSuccess: () => {
       setIsLogedIn(true);
     },
     onError: () => {
       setIsLogedIn(false);
     },
-    enabled: !isLoggedIn,
+    retry: false,
+    initialData: null,
   });
 
   return { me, isLoggedIn };

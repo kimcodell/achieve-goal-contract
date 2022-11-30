@@ -1,21 +1,24 @@
 import ButtonShort from '@components/atoms/ShortButton';
 import TextInput from '@components/atoms/TextInput';
 import AuthLayout from '@components/layouts/AuthLayout';
-import AppColor from '@styles/AppColor';
 import { NextPageWithLayout } from 'pages/_app';
 import styled from '@emotion/styled';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import { useRouter } from 'next/router';
-import { signup } from '@apis/authApi';
+import { checkEmail, checkNickname, signup } from '@apis/authApi';
 import { useMutation } from '@tanstack/react-query';
+import { toast } from 'react-toastify';
+import { MouseEvent, useCallback, useState } from 'react';
 
 interface SignUpProps {}
 
-const SignUp: NextPageWithLayout<SignUpProps> = ({}: SignUpProps) => {
+const SignUp: NextPageWithLayout<SignUpProps> = ({}) => {
   const router = useRouter();
 
-  const { values, errors, touched, handleSubmit, handleChange, handleBlur } = useFormik({
+  const [checked, setChecked] = useState({ nickname: false, email: false });
+
+  const { values, errors, touched, handleSubmit, handleChange, handleBlur, setFieldError } = useFormik({
     initialValues: {
       name: '',
       nickname: '',
@@ -40,6 +43,14 @@ const SignUp: NextPageWithLayout<SignUpProps> = ({}: SignUpProps) => {
       return error;
     },
     onSubmit: values => {
+      if (!checked.nickname) {
+        toast.error('닉네임 중복 체크를 진행해 주세요');
+        return;
+      }
+      if (!checked.email) {
+        toast.error('이메일 중복 체크를 진행해 주세요');
+        return;
+      }
       const params = {
         name: values.name,
         email: values.email,
@@ -47,12 +58,55 @@ const SignUp: NextPageWithLayout<SignUpProps> = ({}: SignUpProps) => {
         nickname: values.nickname,
         registerType: 1,
       };
-      console.log(params);
       _signup(params);
     },
   });
 
-  const { mutate: _signup } = useMutation(signup);
+  const { mutate: _signup } = useMutation(signup, {
+    onSuccess: () => {
+      toast.success('가입이 완료되었습니다.');
+      router.push('/auth/login');
+    },
+  });
+
+  const { mutate: _checkNickname } = useMutation(checkNickname, {
+    onSuccess: res => {
+      if (!res) return;
+      if (res.message) {
+        setFieldError('nickname', res.message);
+      } else {
+        setChecked(prev => ({ ...prev, nickname: true }));
+      }
+    },
+  });
+
+  const { mutate: _checkEmail } = useMutation(checkEmail, {
+    onSuccess: res => {
+      if (!res) return;
+      if (res.message) {
+        setFieldError('email', res.message);
+      } else {
+        setChecked(prev => ({ ...prev, email: true }));
+      }
+    },
+  });
+
+  const onCheckNickname = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      if (!values.nickname) return;
+      _checkNickname({ nickname: values.nickname });
+    },
+    [values.nickname, _checkNickname],
+  );
+  const onCheckEmail = useCallback(
+    (e: MouseEvent<HTMLButtonElement>) => {
+      e.preventDefault();
+      if (!values.email) return;
+      _checkEmail({ email: values.email });
+    },
+    [values.email, _checkEmail],
+  );
 
   return (
     <Container>
@@ -68,26 +122,36 @@ const SignUp: NextPageWithLayout<SignUpProps> = ({}: SignUpProps) => {
           onBlur={handleBlur}
           onChange={handleChange}
         />
-        <TextInput
-          name='nickname'
-          placeholder='닉네임'
-          wrapperStyle={{ width: '100%', minWidth: '280px' }}
-          error={Boolean(touched.nickname && errors.nickname)}
-          helperText={errors.nickname}
-          value={values.nickname}
-          onBlur={handleBlur}
-          onChange={handleChange}
-        />
-        <TextInput
-          name='email'
-          placeholder='이메일'
-          wrapperStyle={{ width: '100%', minWidth: '280px' }}
-          error={Boolean(touched.email && errors.email)}
-          helperText={errors.email}
-          value={values.email}
-          onBlur={handleBlur}
-          onChange={handleChange}
-        />
+        <div style={{ display: 'flex', columnGap: '10px' }}>
+          <TextInput
+            name='nickname'
+            placeholder='닉네임'
+            error={Boolean(touched.nickname && errors.nickname)}
+            helperText={errors.nickname}
+            value={values.nickname}
+            onBlur={handleBlur}
+            onChange={e => {
+              handleChange(e);
+              setChecked(prev => ({ ...prev, nickname: false }));
+            }}
+          />
+          <ButtonShort buttonStyle={{ width: '64px' }} label='중복 체크' onClick={onCheckNickname} disabled={checked.nickname} />
+        </div>
+        <div style={{ display: 'flex', columnGap: '10px' }}>
+          <TextInput
+            name='email'
+            placeholder='이메일'
+            error={Boolean(touched.email && errors.email)}
+            helperText={errors.email}
+            value={values.email}
+            onBlur={handleBlur}
+            onChange={e => {
+              handleChange(e);
+              setChecked(prev => ({ ...prev, email: false }));
+            }}
+          />
+          <ButtonShort buttonStyle={{ width: '64px' }} label='중복 체크' onClick={onCheckEmail} disabled={checked.email} />
+        </div>
         <TextInput
           name='password'
           placeholder='비밀번호'

@@ -7,6 +7,8 @@ import { getAllPosts } from '@apis/postApi';
 import AppColor from '@styles/AppColor';
 import ButtonShort from '@components/atoms/ShortButton';
 import { useRouter } from 'next/router';
+import useMe from '@hooks/useMe';
+import { useCallback } from 'react';
 
 interface HomeProps {
   data: PostSimpleDto[];
@@ -21,13 +23,20 @@ export async function getServerSideProps() {
   };
 }
 
-const Home: NextPageWithLayout<HomeProps> = ({ data = [] }: HomeProps) => {
+const Home: NextPageWithLayout<HomeProps> = ({ data = [] }) => {
+  const { isLoggedIn } = useMe();
+
   const router = useRouter();
+
+  const onWritePost = useCallback(() => {
+    router.push('/post/newgoal');
+  }, [router]);
+
   return (
     <>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
         <h1>게시글 목록</h1>
-        <ButtonShort label='글쓰기' onClick={() => router.push('/post/newgoal')} buttonStyle={{ fontSize: '16px', height: '40px' }} />
+        {isLoggedIn && <ButtonShort label='글쓰기' onClick={onWritePost} buttonStyle={{ fontSize: '16px', height: '40px' }} />}
       </div>
       <div style={{ border: `1px solid ${AppColor.border.gray}`, borderRadius: '20px', padding: '40px' }}>
         <table style={{ width: '100%', borderCollapse: 'collapse' }}>

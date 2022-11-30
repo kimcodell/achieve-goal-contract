@@ -12,25 +12,34 @@ import { NextPageWithLayout } from 'pages/_app';
 import { useMemo, useState } from 'react';
 import { toast } from 'react-toastify';
 import { useQuery } from '@tanstack/react-query';
+import useMe from '@hooks/useMe';
 
 interface PostProps {}
 
-const Post: NextPageWithLayout<PostProps> = ({}: PostProps) => {
+const Post: NextPageWithLayout<PostProps> = ({}) => {
   const [openCertiPost, setOpenCertiPost] = useState<boolean>(true);
 
   const router = useRouter();
 
   const postId = useMemo(() => (typeof router.query.id === 'string' ? Number(router.query.id) : undefined), [router]);
 
-  const { data, isLoading } = useQuery([POST_QUERY_KEY.GET_POST_BY_ID, postId], async () => {
-    if (!postId) return;
-    if (postId === 0 || isNaN(postId)) {
-      toast.error('잘못된 요청입니다.');
-      router.push('/');
-      return;
-    }
-    return await getPostById({ postId });
-  });
+  const { isLoggedIn } = useMe();
+
+  const { data, isLoading } = useQuery(
+    [POST_QUERY_KEY.GET_POST_BY_ID, postId],
+    async () => {
+      if (!postId) return null;
+      if (postId === 0 || isNaN(postId)) {
+        toast.error('잘못된 요청입니다.');
+        router.push('/');
+        return null;
+      }
+      return await getPostById({ postId });
+    },
+    {
+      initialData: null,
+    },
+  );
 
   const formattedData = useMemo(
     () => ({
@@ -83,9 +92,9 @@ const Post: NextPageWithLayout<PostProps> = ({}: PostProps) => {
         {data.comments.length > 0 ? (
           <CommentHeader>댓글 {data.comments.length} 개</CommentHeader>
         ) : (
-          <CommentHeader>첫번째 응원 댓글을 남겨주세요!</CommentHeader>
+          <CommentHeader>아직 응원 댓글이 없습니다.</CommentHeader>
         )}
-        <CommentInput postId={data.postId} />
+        {isLoggedIn && <CommentInput postId={data.postId} />}
         {data.comments.map(comment => (
           <CommentComponent key={comment.id} data={comment} />
         ))}
@@ -140,7 +149,7 @@ const CertiPostOpenButton = styled.button`
 `;
 
 const CommentHeader = styled.p`
-  font-size: 20px;
+  font-size: 16px;
   font-weight: 700;
   color: ${AppColor.text.main};
   margin-bottom: 14px;

@@ -9,17 +9,27 @@ export const POST_QUERY_KEY = {
 };
 
 export async function getAllPosts(): Promise<PostSimpleDto[]> {
-  const {
-    data: { data },
-  } = await axiosInstance.get(`${prefix}`);
-  return data;
+  try {
+    const {
+      data: { data },
+    } = await axiosInstance.get(`${prefix}`);
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 export async function getPostById(params: { postId: number }): Promise<PostDto> {
-  const {
-    data: { data },
-  } = await axiosInstance.get(`${prefix}/${params.postId}`);
-  return data;
+  try {
+    const {
+      data: { data },
+    } = await axiosInstance.get(`${prefix}/${params.postId}`);
+    return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }
 
 export async function createNewPost(params: {
@@ -35,5 +45,6 @@ export async function createNewPost(params: {
     await axiosInstance.post(`${prefix}`, params);
   } catch (error) {
     console.log(error);
+    throw error;
   }
 }
