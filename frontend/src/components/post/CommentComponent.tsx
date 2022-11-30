@@ -1,6 +1,7 @@
 import Profile from '@components/atoms/Profile';
 import ButtonShort from '@components/atoms/ShortButton';
 import styled from '@emotion/styled';
+import useMe from '@hooks/useMe';
 import AppColor from '@styles/AppColor';
 import { formatDate } from '@utils/Utils';
 import { useMemo } from 'react';
@@ -16,13 +17,13 @@ interface CommentComponentProps {
 }
 
 export default function CommentComponent({ data }: CommentComponentProps) {
-  //TODO 로그인 기능 붙이고 수정
-  const myUserId = useMemo(() => 2, []);
+  const { me } = useMe();
+  const myUserId = useMemo(() => me?.userId, [me]);
 
   const createdAt = useMemo(() => formatDate(data.createdAt), [data]);
 
   return (
-    <div style={{ display: 'flex', alignItems: 'flex-start', columnGap: '10px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', rowGap: '14px', marginBottom: '20px' }}>
       <Container>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <div style={{ display: 'flex', columnGap: '10px', alignItems: 'center' }}>
@@ -34,14 +35,14 @@ export default function CommentComponent({ data }: CommentComponentProps) {
         <Comment>{data.comment}</Comment>
       </Container>
       {myUserId && data.userId === myUserId && (
-        <div style={{ display: 'flex', flexDirection: 'column', rowGap: '10px', width: '70px' }}>
+        <div style={{ display: 'flex', flexDirection: 'row', columnGap: '10px', alignItems: 'flex-start' }}>
           <ButtonShort
             label='수정'
-            buttonStyle={{ width: '100%', height: '40px', fontSize: '16px', backgroundColor: AppColor.text.main }}
+            buttonStyle={{ width: '72px', height: '40px', fontSize: '16px', backgroundColor: AppColor.text.main }}
           />
           <ButtonShort
             label='삭제'
-            buttonStyle={{ width: '100%', height: '40px', fontSize: '16px', backgroundColor: AppColor.text.error }}
+            buttonStyle={{ width: '72px', height: '40px', fontSize: '16px', backgroundColor: AppColor.text.error }}
           />
         </div>
       )}
@@ -50,11 +51,10 @@ export default function CommentComponent({ data }: CommentComponentProps) {
 }
 
 const Container = styled.div`
-  width: calc(100% - 80px);
+  width: 100%;
   border: 1px solid ${AppColor.border.gray};
   border-radius: 8px;
   padding: 10px 20px;
-  margin-bottom: 20px;
 `;
 
 const Nickname = styled.p`

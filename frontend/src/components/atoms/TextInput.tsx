@@ -2,7 +2,7 @@ import styled from '@emotion/styled';
 import AppColor from '@styles/AppColor';
 import { CSSProperties, DetailedHTMLProps, InputHTMLAttributes, ReactElement } from 'react';
 
-interface TextInputProps {
+export interface TextInputProps {
   wrapperStyle?: CSSProperties;
   containerStyle?: CSSProperties;
   endAdornment?: ReactElement;

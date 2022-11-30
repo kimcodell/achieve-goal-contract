@@ -35,6 +35,8 @@ export default function CommonLayout({ children, title = '', description }: Comm
     _logout();
   }, [_logout]);
 
+  const onLogin = () => router.push('/auth/login');
+
   return (
     <>
       <Head>
@@ -61,7 +63,7 @@ export default function CommonLayout({ children, title = '', description }: Comm
                   <ShortButton label='로그아웃' onClick={onLogout} />
                 </>
               ) : (
-                <ShortButton label='로그인' onClick={() => router.push('/auth/login')} />
+                <ShortButton label='로그인' onClick={onLogin} />
               )}
             </div>
           </HeaderContainer>
