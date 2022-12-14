@@ -8,12 +8,12 @@ import { ToastContainer } from 'react-toastify';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 //참고: https://nextjs.org/docs/basic-features/layouts#with-typescript
-export type NextPageWithLayout<T> = NextPage<T> & {
+export type NextPageWithLayout<P = {}, IP = P> = NextPage<P, IP> & {
   getLayout?: (page: ReactElement) => ReactNode;
 };
 
 interface MyAppProps extends AppProps {
-  Component: NextPageWithLayout<any>;
+  Component: NextPageWithLayout;
 }
 
 function App({ Component, pageProps }: MyAppProps) {
